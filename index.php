@@ -207,6 +207,7 @@ $(document).ready(function(){
 	})
 })
 </script>
+<link href="images/favicon.ico" rel="icon" type="image/x-icon" />
 <link href="style.css" media="all" rel="stylesheet" type="text/css"/>
 <link href="slide_animation.css" media="all" rel="stylesheet" type="text/css"/>
 <title>OCOO || The Beauty Drink</title>
