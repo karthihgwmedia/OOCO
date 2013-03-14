@@ -67,6 +67,7 @@
               <h2 class="subHeading">FOR THE BEAUTY CARE OF THE FUTURE.</h2>
               <div class="scienceWorks">
                 For years, we've been following nutrition research and advances in skin biology to bring you the most up-to-date beauty care.	
+                <div class="clear"></div>
                 <div class="scienceWorksRst columns eight">
                     The result: OCOO's active ingredients complex
                     <img src="images/scienceWorkRes.png" class="scienceWorksRstImg"/>
@@ -356,7 +357,7 @@ t imes higher than those of vitamins Cor E.</div>
       <div id="contact_page_2" class="clsAboutCon slidePage">
         <h3 class="asideTitle">Contact US</span></h3>
         <div class="contactFrmCon">
-          <div class="contactFrmTle"> Let us know what you think </div>
+          <?php /*?><div class="contactFrmTle"> Let us know what you think </div>
           <div class="contactFrmDesc">
             <p><strong>For product info, testimonials and more.</strong></p>
             <p>Please fill out the form below, we will contact you as soon as one of our team members is available.</p>
@@ -405,7 +406,19 @@ t imes higher than those of vitamins Cor E.</div>
               </div>
               <div class="clear"></div>
             </div>
-          </form>
+          </form><?php */?>
+          <div class="contactFrmTle"> Let us know what you think </div>
+          <div class="contactFrmDesc">
+            <p><strong>For product info, testimonials and more.</strong></p>            
+          </div>
+          <div class="companyName">
+			OBS Group LLC            
+          </div>
+          <div class="clsContactDetails">	
+          	<p class="clsAddress">PO Box 88001, Dubai - UAE</p>
+	       <p><strong>Tel:</strong> +9714 297 12 12</p>
+		   <p><strong>Fax:</strong> +971 4 297 11 22</p>
+		   <p><strong>Email:</strong> <a href="mailto:info@obsgroup.com">info@obsgroup.com</a></p>
         </div>
       </div>
     </div>

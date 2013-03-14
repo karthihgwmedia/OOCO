@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width" />
 <link rel="stylesheet" href="stylesheets/foundation.css">
 <link rel="stylesheet" href="stylesheets/app.css">
-
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script src="javascripts/jquery.nicescroll-master/jquery.nicescroll.js"></script>
 <script src="javascripts/modernizr.foundation.js"></script>
