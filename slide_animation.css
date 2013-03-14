@@ -1,0 +1,366 @@
+@charset "utf-8";
+/* CSS Document */
+.asideAnimation
+{
+	display:none;	
+}
+.asideAnimation.animate
+{	
+	-webkit-animation-name: slideIn;
+	-webkit-animation-duration: 1s;
+	-webkit-animation-timing-function: ease;
+	-webkit-animation-iteration-count: 1;	
+	-webkit-animation-direction: normal;
+	-webkit-animation-delay: 0;
+	-webkit-animation-play-state: running;
+	-webkit-animation-fill-mode: forwards;	
+	
+	-moz-animation-name: slideIn;
+	-moz-animation-duration:1s;
+	-moz-animation-timing-function: ease;
+	-moz-animation-iteration-count: 1;	
+	-moz-animation-direction: normal;
+	-moz-animation-delay: 0;
+	-moz-animation-play-state: running;
+	-moz-animation-fill-mode: forwards;	
+	
+	-ms-animation-name: slideIn;
+	-ms-animation-duration: 1s;
+	-ms-animation-timing-function: ease;
+	-ms-animation-iteration-count: 1;	
+	-ms-animation-direction: normal;
+	-ms-animation-delay: 0;
+	-ms-animation-play-state: running;
+	-ms-animation-fill-mode: forwards;
+	
+	animation-name: slideIn;
+	animation-duration: 1s;
+	animation-timing-function: ease;
+	animation-iteration-count: 1;	
+	animation-direction: normal;
+	animation-delay: 0;
+	animation-play-state: running;
+	animation-fill-mode: forwards;
+	display:block;
+}
+.asideAnimation.animateOut
+{	
+	-webkit-animation-name: slideOut;
+	-webkit-animation-duration: 1s;
+	-webkit-animation-timing-function: ease;
+	-webkit-animation-iteration-count: 1;	
+	-webkit-animation-direction: normal;
+	-webkit-animation-delay: 0;
+	-webkit-animation-play-state: running;
+	-webkit-animation-fill-mode: forwards;	
+	
+	-moz-animation-name: slideOut;
+	-moz-animation-duration: 1s;
+	-moz-animation-timing-function: ease;
+	-moz-animation-iteration-count: 1;	
+	-moz-animation-direction: normal;
+	-moz-animation-delay: 0;
+	-moz-animation-play-state: running;
+	-moz-animation-fill-mode: forwards;	
+	
+	-ms-animation-name: slideOut;
+	-ms-animation-duration: 1s;
+	-ms-animation-timing-function: ease;
+	-ms-animation-iteration-count: 1;	
+	-ms-animation-direction: normal;
+	-ms-animation-delay: 0;
+	-ms-animation-play-state: running;
+	-ms-animation-fill-mode: forwards;
+	
+	animation-name: slideOut;
+	animation-duration: 1s;
+	animation-timing-function: ease;
+	animation-iteration-count: 1;	
+	animation-direction: normal;
+	animation-delay: 0;
+	animation-play-state: running;
+	animation-fill-mode: forwards;	
+}
+@-webkit-keyframes slideIn
+{
+	90%
+	{
+		left:55%
+	}
+	100% {
+		left:57%
+	}
+	
+}
+
+@-moz-keyframes slideIn
+{
+	90%
+	{
+		left:55%
+	}
+	100% {
+		left:57%
+	}
+	
+}
+
+@-ms-keyframes slideIn
+{
+	90%
+	{
+		left:55%
+	}
+	100% {
+		left:57%
+	}
+	
+}
+@keyframes slideIn
+{
+	90%
+	{
+		left:55%
+	}
+	100% {
+		left:57%
+	}
+	
+}
+
+@-webkit-keyframes slideOut
+{
+	0%{
+		left:47%
+	}
+	80%
+	{
+		left:130%;
+	}
+	100% {
+		display:none;
+	}
+	
+}
+
+@-moz-keyframes slideOut
+{
+	0%{
+		left:47%
+	}
+	80%{
+		left:130%;
+	}
+	100% {
+		display:none;
+	}
+	
+}
+
+@-ms-keyframes slideOut
+{
+	0%{
+		left:47%
+	}
+	80%{
+		left:130%;
+	}
+	100% {
+		display:none;
+	}
+	
+}
+@keyframes slideOut
+{
+	0%{
+		left:47%
+	}
+	80%
+	{
+		left:130%;
+	}
+	100% {
+		display:none;
+	}
+	
+}
+.shopAnimation
+{
+	display:none;
+}
+.shopAnimation.animate
+{	
+	-webkit-animation-name: slideUpIn;
+	-webkit-animation-duration: 1s;
+	-webkit-animation-timing-function: ease;
+	-webkit-animation-iteration-count: 1;	
+	-webkit-animation-direction: normal;
+	-webkit-animation-delay: 0;
+	-webkit-animation-play-state: running;
+	-webkit-animation-fill-mode: forwards;	
+	
+	-moz-animation-name: slideUpIn;
+	-moz-animation-duration: 1s;
+	-moz-animation-timing-function: ease;
+	-moz-animation-iteration-count: 1;	
+	-moz-animation-direction: normal;
+	-moz-animation-delay: 0;
+	-moz-animation-play-state: running;
+	-moz-animation-fill-mode: forwards;	
+	
+	-ms-animation-name: slideUpIn;
+	-ms-animation-duration: 1s;
+	-ms-animation-timing-function: ease;
+	-ms-animation-iteration-count: 1;	
+	-ms-animation-direction: normal;
+	-ms-animation-delay: 0;
+	-ms-animation-play-state: running;
+	-ms-animation-fill-mode: forwards;
+	
+	animation-name: slideUpIn;
+	animation-duration: 1s;
+	animation-timing-function: ease;
+	animation-iteration-count: 1;	
+	animation-direction: normal;
+	animation-delay: 0;
+	animation-play-state: running;
+	animation-fill-mode: forwards;
+	display:block;
+}
+@-webkit-keyframes slideUpIn
+{
+	90%
+	{
+		top:-5%
+	}
+	100% {
+		top:0%
+	}
+	
+}
+
+@-moz-keyframes slideUpIn
+{
+	90%
+	{
+		top:-5%
+	}
+	100% {
+		top:0%
+	}
+	
+}
+
+@-ms-keyframes slideUpIn
+{
+	90%
+	{
+		top:-5%
+	}
+	100% {
+		top:0%
+	}
+	
+}
+@keyframes slideUpIn
+{
+	90%
+	{
+		top:-5%
+	}
+	100% {
+		top:0%
+	}
+}
+.shopAnimation.animateOut
+{	
+	-webkit-animation-name: slideDownOut;
+	-webkit-animation-duration: 1s;
+	-webkit-animation-timing-function: ease;
+	-webkit-animation-iteration-count: 1;	
+	-webkit-animation-direction: normal;
+	-webkit-animation-delay: 0;
+	-webkit-animation-play-state: running;
+	-webkit-animation-fill-mode: forwards;	
+	
+	-moz-animation-name: slideDownOut;
+	-moz-animation-duration: 1s;
+	-moz-animation-timing-function: ease;
+	-moz-animation-iteration-count: 1;	
+	-moz-animation-direction: normal;
+	-moz-animation-delay: 0;
+	-moz-animation-play-state: running;
+	-moz-animation-fill-mode: forwards;	
+	
+	-ms-animation-name: slideDownOut;
+	-ms-animation-duration: 1s;
+	-ms-animation-timing-function: ease;
+	-ms-animation-iteration-count: 1;	
+	-ms-animation-direction: normal;
+	-ms-animation-delay: 0;
+	-ms-animation-play-state: running;
+	-ms-animation-fill-mode: forwards;
+	
+	animation-name: slideDownOut;
+	animation-duration: 1s;
+	animation-timing-function: ease;
+	animation-iteration-count: 1;	
+	animation-direction: normal;
+	animation-delay: 0;
+	animation-play-state: running;
+	animation-fill-mode: forwards;	
+}
+@-webkit-keyframes slideDownOut
+{
+	0%{
+		top:27%
+	}
+	80%
+	{
+		top:100%;
+	}
+	100% {
+		display:none;
+	}	
+}
+
+@-moz-keyframes slideDownOut
+{
+	0%{
+		top:27%
+	}
+	80%
+	{
+		top:100%;
+	}
+	100% {
+		display:none;
+	}	
+	
+}
+
+@-ms-keyframes slideDownOut
+{	0%{
+		top:27%
+	}
+	80%
+	{
+		top:100%;
+	}
+	100% {
+		display:none;
+	}	
+}
+@keyframes slideDownOut
+{
+	0%{
+		top:27%
+	}
+	80%
+	{
+		top:100%;
+	}
+	100% {
+		display:none;
+	}	
+}
