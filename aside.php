@@ -308,7 +308,8 @@ t imes higher than those of vitamins Cor E.</div>
         <?php /*?><h3 class="asideTitle">Coming Soon</h3><?php */?>
         <div id="blog_page_1" class="slidePage openTab addOpacity" style="text-align:center"> 
         	<div class="txt_center_align commingSoon">
-	        	<img src="images/comming_soon.png"  align="middle"/> 
+	        	<img src="images/Blog_Slide_comingsoonback_grayscale.png"  align="middle" class="comming_over_off"/> 
+                <img src="images/Blog_Slide_comingsoonback_color.png"  align="middle" class="comming_over_on"/> 
             </div>
             <div class="clear"></div>
          </div>

@@ -62,7 +62,18 @@ $(document).ready(function(){
 	var shopOrderOpen=false;
 	var nav_cur_page='';	
 	windowresize();
+	$(".comming_over_on").hide();
 	setTimeout('onReadyAnimate()',200);
+	
+	$(".commingSoon").hover(function(){
+		$(".comming_over_off").hide();
+		$(".comming_over_on").show();
+	},
+	function(){
+		$(".comming_over_on").hide();
+		$(".comming_over_off").show();
+	}
+	)
 	
 	//$(".slimContentContainer").niceScroll({cursorborderradius :"0px",cursorcolor:"#000"}); 
 	
