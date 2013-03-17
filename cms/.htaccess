@@ -1,0 +1,12 @@
+
+# BEGIN WordPress
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /karthi_code/ocoo_beauty/web/OOCO/cms/
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /karthi_code/ocoo_beauty/web/OOCO/cms/index.php [L]
+</IfModule>
+
+# END WordPress

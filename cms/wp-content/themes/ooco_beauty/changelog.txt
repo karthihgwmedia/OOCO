@@ -1,0 +1,51 @@
+== Changelog ==
+
+= Theme Name: Themia Lite =
+
+= Version: 1.3.1 =
+* required issue regarding "comments are closed" message does not appear to be addressed is now fixed.
+
+= Version: 1.3.0 =
+* Deprecated get_theme_data error  is now fixed.
+* Removed @package wordpress text.
+* Code Optimized.
+
+= Version: 1.2.9 =
+
+* No "Comments Disabled" message should be displayed on pages fixed.
+
+= Version: 1.2.8 =
+
+* Removed unwanted scripts.
+* Optimized css.
+
+= Version: 1.2.7 =
+
+* Comments Form fixed.
+
+= Version: 1.2.6 =
+
+* Custom Menu Functionality fixed.
+
+= Version: 1.2.5 =
+
+* 404 Page showing no content.
+* Comment Reply Link.
+
+* InkThemes Admin Style.
+
+= Version: 1.2.4 =
+
+* Few scripts and styles enqueue.
+* Theme Option Panel optimized.
+* Updated few functions.
+
+= Version: 1.2.3 =
+
+* Child theme enabled.
+
+= Version: 1.2.2 =
+
+* Language translation enabled.
+* Update Theme option.
+* Update searchform.
