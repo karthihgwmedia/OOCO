@@ -47,7 +47,7 @@ var asideOpen=false;
 var shopOrderOpen=false;
 var nav_cur_page='';	
 var nav_cur_page_id='';
-
+var formScorllApplied=false;
 jQuery(document).ready(function($){
 	
 	var wrapper_he=jQuery("#wrapper").height()+10;	
@@ -61,6 +61,22 @@ jQuery(document).ready(function($){
 	jQuery("aside.animate .slimContentContainer").live("mouseenter",function(){
 		jQuery(this).niceScroll({cursorborderradius :"0px",cursorcolor:"#000"}); 
 	})
+	jQuery("#ajax #shopOrder .userForms").live("mouseenter",function(){
+		
+		if(!formScorllApplied)
+		{
+			jQuery(this).mCustomScrollbar({
+				scrollButtons:{
+					enable:true,
+				},
+				advanced:{
+					updateOnContentResize: true
+				}
+			}); 
+			formScorllApplied=true;
+		}
+	})
+	
 	
 	jQuery("#menu a.clSlideIn").live("click",function(e){		
 		
@@ -207,7 +223,7 @@ jQuery(document).ready(function($){
 		return true;
 	})*/
 	
-	jQuery(".shopForms").live("click",function(e){
+	jQuery(".shopForms,.confirmLogin").live("click",function(e){
 		e.preventDefault();
 		var shopFormsURL=$(this).attr("href");
 		
@@ -217,11 +233,53 @@ jQuery(document).ready(function($){
 			}
 			else
 			{
+				formScorllApplied=false;	
 				//setTimeout('showShopFrm()',1000);
 			}
 		})
 	})
+	jQuery("#ajax #shopOrder .userForms #emirate,#ajax #shopOrder .userForms #location,#ajax #shopOrder .userForms #po_box,#ajax #shopOrder .userForms #regfrmSubmit").live("focus",function(){
+		jQuery("#ajax #shopOrder .userForms").mCustomScrollbar("scrollTo","bottom");	
+	})	
+	jQuery("#ajax #shopOrder .userForms #regfrmSubmit,#ajax #shopOrder .userForms #regfrmSubmitNo").live("click",function(){
+		jQuery("#ajax #shopOrder .userForms").mCustomScrollbar("scrollTo","bottom");	
+	})
+	jQuery("#emirate").live("change",function(){
+		var emirate_val=jQuery(this).val();
+		
+		if($(this).val()!="")
+			get_city($(this).val());
+		else
+			$("#location").html(new Option("Select", ""));		
+	})
+	jQuery(".userForms p.error").live("mouseover",function(){
+		jQuery(this).remove();
+	})
+	/*jQuery("#regfrmSubmit").live("click",function(e){
+		e.preventDefault();
+		jQuery("#registerFrm").submit()
+	})*/
 })
+function get_city(country_val)
+{
+	jQuery.ajax({type: "POST",url: admin_url,data:'country_id='+country_val+"&action=my_front_end_action&get_location=yes",async:false,success: function(data) {
+			 var json_data=jQuery.parseJSON(data);
+			 if(json_data.format=='json')
+			 {
+				 jQuery("#location").html('<option value="">Select Area</option>');
+				 
+				 if(json_data.location_options)
+				 {
+					 jQuery.each(json_data.location_options,function(i,item)
+						 {
+							 jQuery("#location").append(new Option(item, i));
+						 }
+					 )
+				 }
+				 
+			 }
+		}})
+}
 function showShopFrm()
 {
 	jQuery('#loading').slideUp('fast',function(){

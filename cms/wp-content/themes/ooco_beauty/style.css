@@ -683,9 +683,35 @@ aside .slimContentContainer {
 	height:25px;
 	border:2px solid #666666;
 	border-radius:3px;
+	padding: 0px;
+	text-align:center;
 }
 #shopOrder .addToCart {
 	text-align:right;
+}
+.AddCardMessage
+{
+	background: none repeat scroll 0 0 #FAF0E7;
+    border-radius: 10px 10px 10px 10px;
+    margin: 5px 0;
+    padding: 10px;
+    text-align: left;
+	display:none;
+}
+.AddCardMessage a
+{
+	color:#D71E25;	
+}
+.productReceiverName
+{
+	position:relative;
+}
+.productReceiverName label
+{
+	left: 7px;
+    opacity: 1;
+    position: absolute;
+    top: 9px;
 }
 #shopOrder .addToCart a {
 	display:inline-block;
@@ -699,6 +725,17 @@ aside .slimContentContainer {
 	color:#FFFFFF;
 	border:1px solid #858585;
 	padding:10px 15px;
+	opacity:0.7;
+	-webkit-transition: all 300ms ease-out;
+	-moz-transition: all 300ms ease-out;
+	-ms-transition: all 300ms ease-out;
+	-o-transition: all 300ms ease-out;
+	transition: all 300ms ease-out;
+}
+#shopOrder .addToCart a.addCartLink:hover
+{	
+	text-decoration:none;
+	opacity:1;
 }
 #shopOrder .addToCart a.preOrderLink {
 	background:#dbe1e1;
@@ -742,8 +779,10 @@ aside .slimContentContainer {
 	text-decoration:none;
 }
 .userForms {
-	min-height:450px;
 	margin:35px 0 0;
+	height:300px;
+	overflow:hidden;
+	min-height:460px;
 }
 .userForms .FrmDesc {
 	margin:20px 0;
@@ -752,9 +791,34 @@ aside .slimContentContainer {
 	font-family: 'johnston_itcbold';
 	text-transform:uppercase;
 }
+.userForms .formField
+{
+	position:relative;
+}
 .userForms .formField .clsInput {
 	border:2px solid #999999;
 	height:45px;
+	position:relative;
+}
+.userForms .formField  .clsInputSelect
+{
+	padding:8px 5px;
+	border:2px solid #999999;
+	margin:5px 0;
+	position:relative;
+}
+.userForms .regQuestion
+{
+	margin: 10px 0;		
+}
+.userForms p.error
+{
+	background: none repeat scroll 0 0 white;
+    color: red;
+    left: 25px;
+    position: absolute;
+    top: 14px;
+    width: 80%;
 }
 .userForms .clsFrmDesc {
 	margin:0 0 0 30px;

@@ -41,8 +41,14 @@
 <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/stylesheets/foundation.css">
 <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/stylesheets/app.css">
 <link rel="stylesheet" type="text/css" media="all" href="<?php bloginfo('stylesheet_url'); ?>" />
+<script type="text/javascript">
+	var site_url = '<?php echo get_option('siteurl'); ?>';
+	var admin_url = '<?php echo admin_url( 'admin-ajax.php' ) ?>';
+</script>
 <link href="<?php echo get_template_directory_uri(); ?>/slide_animation.css" media="all" rel="stylesheet" type="text/css"/>
 <?php wp_head(); ?>
+<link href="<?php echo get_template_directory_uri(); ?>/stylesheets/jquery.mCustomScrollbar.css" media="all" rel="stylesheet" type="text/css"/>
+
 <?php /*?><script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script><?php */?>
 </head>
 <body <?php body_class(); ?>>
