@@ -39,6 +39,10 @@
 </div>
 <script type="text/javascript">
 jQuery(document).ready(function($){
+	jQuery("#LoginfrmSubmit").click(function(e){
+		e.preventDefault();
+		jQuery("#loginFrm").submit();
+	})
 	var v = jQuery("#loginFrm").validate({
 			rules :{email:{required:true,email:true},password:{required:true}},
 			onfocusout: false,

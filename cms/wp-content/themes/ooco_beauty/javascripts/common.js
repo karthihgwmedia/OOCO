@@ -119,8 +119,11 @@ jQuery(document).ready(function($){
 			return false;
 		})
 	
-	jQuery(".shopOrderLink").live("click",function(e){
+	jQuery(".shopOrderLink").click(function(e){
+											
 		e.preventDefault();
+		
+		//console.log('call');
 		
 		if(shopOrderOpen)
 			return false;
@@ -133,7 +136,10 @@ jQuery(document).ready(function($){
 			
 			setTimeout('jQuery("#'+nav_cur_page_id+'").removeClass("animate");',1000);
 		}
+		shopOrderOpen=true;
+		
 		jQuery("#loading").slideDown();
+		
 		jQuery("#menu a").removeClass("current");
 		
 		jQuery("#menu .shopOrderLink").addClass("current");
@@ -175,6 +181,7 @@ jQuery(document).ready(function($){
 	})
 	jQuery(".closeShop").live("click",function(e){
 		e.preventDefault();	
+		//console.log('call');
 		jQuery("#shopOrder").addClass("animateOut");
 		shopOrderOpen=false;
 		jQuery("#menu a").removeClass("current");
@@ -259,6 +266,54 @@ jQuery(document).ready(function($){
 		e.preventDefault();
 		jQuery("#registerFrm").submit()
 	})*/
+	jQuery("#addAddressFrmCancel").live("click",function(){
+		jQuery(".userMangeAddress").fadeOut('fast',function(){
+			jQuery(".userMangeAddress").remove();
+		})
+	})
+	jQuery("#manageAddress").live("change",function(){
+		var manageAddressVal=0;
+		manageAddressVal=jQuery(this).val();
+		if(manageAddressVal==0)
+		{
+			$("#addAddressFrmSubmit").attr("value","Add");		
+			
+			jQuery("#addAddressFrm").find('input:text, input:password, input:file, select, textarea').val('');
+			
+			jQuery("#addAddressFrm #emirate,#addAddressFrm #location").trigger("change");
+		}
+		else
+		{
+			$("#addAddressFrmSubmit").attr("value","Update");
+			jQuery.ajax({type: "POST",url: admin_url,data:'address_id='+manageAddressVal+"&action=my_front_end_action&get_address=yes",async:false,success: function(data) {
+				 var json_data=jQuery.parseJSON(data);
+				  jQuery("#addAddressFrm .errorCon").removeClass("error");
+					 
+				  jQuery("#addAddressFrm .errorCon").removeClass("success");
+				  
+				 if(json_data.errors)
+				 {	
+					 jQuery("#addAddressFrm .errorCon").addClass("error");
+					
+				 	 jQuery("#addAddressFrm .errorCon").html(json_data.errors.message);
+				 }
+				 else
+				 {
+					  jQuery.each(json_data.success.values,function(i,item)	
+						{
+							jQuery("#addAddressFrm #"+i).val(item);
+							
+							if(i=="emirate")
+							{
+								jQuery("#addAddressFrm #"+i).trigger("change");
+							}
+							if(i=="location")
+								jQuery("#addAddressFrm #"+i).trigger("change");
+						})
+				 }
+			}})
+		}
+	})
 })
 function get_city(country_val)
 {

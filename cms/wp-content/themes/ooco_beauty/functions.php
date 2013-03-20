@@ -1,6 +1,8 @@
 <?php
-
+session_start();
 include_once get_template_directory() . '/functions/inkthemes-functions.php';
+include_once get_template_directory() . '/functions/ooco_cart_function.php';
+
 $functions_path = get_template_directory() . '/functions/';
 /* These files build out the options interface.  Likely won't need to edit these. */
 require_once ($functions_path . 'admin-functions.php');  // Custom functions and plugins
@@ -52,91 +54,7 @@ function inkthemes_enqueue_comment_reply() {
         wp_enqueue_script('comment-reply');
     }
 }
-function get_drop_down_box($table_name,$where='',$valueField='',$displayField='',$sel='',$type='html')
-{
-	global $wpdb;	
-	
-	$option_datas=array();
-	
-	$options='';
-	
-	$sql="SELECT ".$valueField.", ".$displayField." FROM ".$wpdb->prefix.$table_name;
-	
-	if($where!="")
-		$sql=$sql." WHERE ".$where;
-	
-	//echo $sql;
-		
-	$option_datas=$wpdb->get_results( $sql );
-	 
-	/*var_dump($option_datas);*/
-	
-	if(!empty($option_datas))
-	{
-		foreach ($option_datas as $key=>$datas)
-		{
-			if($type=='html')
-			{
-				if($sel!="" && $sel==$datas->$valueField)
-					$options.='<option value=\''.$datas->$valueField.'\' selected="selected">'.$datas->name.'</option>';
-				else
-					$options.='<option value=\''.$datas->$valueField.'\'>'.$datas->name.'</option>';
-			}
-			else
-			{
-				$options[$datas->$valueField]=$datas->name;
-			}	
-		}
-	}
-	
-	return $options;
-	
-}
-function getUserAddressDropdown($user_id)
-{
-	global $wpdb;
-	
-	$sql="SELECT * from ".$wpdb->prefix."useraddress WHERE refUserId = ".$user_id." AND status=1";
-	
-	$wp_useraddress=$wpdb->get_results( $sql );
-	
-	$optionsText='';
-	
-	$optionslabel=array();
-	
-	$options=array();
-	
-	$emirateData=array();
-		
-	if(!empty($wp_useraddress))
-	{
-		foreach($wp_useraddress as $wp_useradd)
-		{
-			if(strlen($wp_useradd->address_1)>20)
-				 $optionslabel[]=substr($wp_useradd->address_1,0,20)."...";
-			else
-				 $optionslabel[]=$wp_useradd->address_1;
-			
-			$locationData=getValueById('location',$wp_useradd->location);
-			
-			if(!empty($locationData[0]))
-				$optionslabel[]=ucfirst($locationData[0]->name);
-			
-			$emirateData=getValueById('emirate',$wp_useradd->emirate);
-			
-			if(!empty($emirateData[0]))
-				$optionslabel[]=ucfirst($emirateData[0]->name);
-			
-			$options[]='<option value="'.$wp_useradd->id.'">'.implode(", ",$optionslabel)."</option>";
-		}
-		
-		if(!empty($options))
-			return implode("",$options);
-		else
-			return "";
-		
-	}
-}
+
 function getValueById($tableName,$id)
 {
 	global $wpdb;
@@ -153,6 +71,12 @@ function front_ajax_fn()
 {
 	global $wpdb;
 	
+	$user_id=0;
+			
+	$current_user = wp_get_current_user();
+		
+	$user_id=$current_user->ID;
+		
 	if(isset($_POST["get_location"]) && $_POST["get_location"]=='yes')
 	{
 		extract($_POST);
@@ -257,6 +181,7 @@ function front_ajax_fn()
 				
 				$userAddressDetails=array(
 											  "refUserId"=>$user_id,
+											  "defaultAddress"=>1,
 											  "mobile"=>$mobile,
 											  "emirate"=>$emirate,
 											  "location"=>$location,
@@ -370,15 +295,153 @@ function front_ajax_fn()
 			}
 		}
 	}
+	if(isset($_POST["saveAddressCart"]) && $_POST["saveAddressCart"]=='yes')
+	{
+		extract($_POST);
+		
+		$updateCartData=array();
+		
+		$addressUpdate=0;
+		
+		$returnArray=array();
+		
+		$wp_temp_cart_id=$_SESSION["wp_temp_cart_id"];
+		
+		if(isset($cartIds))
+		{
+			foreach($cartIds as $cartId)
+			{
+				$updateCartData["address_id"]=$_POST["receiverAddress".$cartId];
+				
+				$updateCartData["receiverName"]=$_POST["receiverName".$cartId];
+				
+				$updateCartData["date_time"]=current_time('mysql');
+				
+				$updateCartData["checkedout"]=1;
+				
+				if(updateData('temp_cart',$updateCartData,array("id"=>$cartId,"status"=>1)))
+				{	
+					$updateHeaderCartData['checkedout']=1;
+					
+					$updateHeaderCartData['sessionUpdate']=$updateCartData["date_time"];
+					
+					$updateHeaderCartData['CreatedDate']=$updateCartData["date_time"];
+					
+					updateData('temp_cart_header',$updateHeaderCartData,array("id"=>$wp_temp_cart_id,"status"=>1));
+					
+					$addressUpdate++;
+				}
+				
+			}
+		}
+		
+		$returnArray['success']['addressUpdate']=$addressUpdate;
+		
+		$returnArray['success']['redirect']='confirm_address';
+		
+		echo json_encode($returnArray);
+		
+	}
+	if(isset($_POST["deleteFromCart"]) && $_POST["deleteFromCart"]=='yes')
+	{
+		extract($_POST);
+		
+		$returnArray=array();
+		
+		if ( $user_id == 0) {
+			$returnArray['errors']['container']='AddCardMessage'.$addCartProductId;
+			$returnArray['errors']['message']="Your session has been expired. Please login <a href='".site_url('shop-login')."' class='shopForms'>here</a>";
+			echo json_encode($returnArray);
+			exit;
+		}
+		
+		$wp_temp_cartWhere=array("refUserId"=>$user_id,"id"=>$curDelLinkId);
+		
+		if($wpdb->update( $wpdb->prefix.'temp_cart', array("status"=>0),$wp_temp_cartWhere ))
+		{
+			$returnArray['success']["message"] = __("Item has been deleted from your cart");
+			
+			$returnArray['success']["Containerid"] = $curDelLinkId;
+			
+			echo json_encode($returnArray);
+			exit;
+		}
+		else
+		{
+			$returnArray['error']["message"] = __("Something went wrong please refresh your page");
+			echo json_encode($returnArray);
+			exit;
+		}
+			
+		$wp_temp_cart_id=$wpdb->insert_id;
+	}
+	if(isset($_POST["addBulkCartProduct"]) && $_POST["addBulkCartProduct"]=='yes')
+	{
+		extract($_POST);
+		//var_dump();
+		
+		$addCartProductId=0;
+		
+		$orderqty=0;
+		
+		if ( $user_id == 0) {
+			$returnArray['errors']['container']='AddCardMessage'.$addCartProductId;
+			$returnArray['errors']['message']="Your session has been expired. Please login <a href='".site_url('shop-login')."' class='shopForms'>here</a>";
+			echo json_encode($returnArray);
+			exit;
+		}
+		
+		$qtyEmty=0;
+		
+		$qtyError=array();
+		
+		$wp_temp_cart_headerData=array();
+		
+		foreach($addCartProductId as $ProductId)
+		{
+			$addCartProductId = (int) $ProductId;
+		
+			$orderqty = (int) $_POST["orderqty".$ProductId];
+		
+			if($orderqty!=0)
+			{
+				$availableItem=getProductAvailability($ProductId,$orderqty);
+				
+				if($availableItem<0)
+				{
+					$returnArray['errors']['container']='AddCardMessage'.$addCartProductId;
+					
+					$returnArray['errors']['message'] =__("We have limited quantity in our stock");
+					
+					$qtyError[]=$returnArray;
+					
+					/*echo json_encode($returnArray);
+					
+					exit;*/
+				}
+				else
+				{
+					$wp_temp_cart_headerData['paymentStatus']=0;
+					
+					$wp_temp_cart_headerData['user_id']=$user_id;
+					
+					$wp_temp_cart_headerData['CreatedDate']=current_time('mysql');
+					
+					$wp_temp_cart_headerData['sessionUpdate']=current_time('mysql');
+								
+					$wp_temp_cart_id=0;
+				}							
+			}
+			else
+			{
+				$qtyEmty++;
+			}
+		}
+	}
+	
 	if(isset($_POST["addCartProduct"]) && $_POST["addCartProduct"]=='yes')
 	{
 		$returnArray=array();
-		
-		$user_id=0;
-			
-		$current_user = wp_get_current_user();
-		
-		$user_id=$current_user->ID;
 		
 		extract($_POST);
 		
@@ -400,23 +463,98 @@ function front_ajax_fn()
 			$returnArray['errors']['message']="Quantity not less then zero.";
 			
 			echo json_encode($returnArray);
+			
 			exit;
 		}
+		
+		$availableItem=getProductAvailability($addCartProductId,$orderqty);
+		
+		/*var_dump($availableItem);
+		exit;*/
+		if($availableItem<0)
+		{
+			$returnArray['errors']['container']='AddCardMessage'.$addCartProductId;
+			
+			$returnArray['errors']['message']=__("We have limited quantity in our stock");
+			
+			echo json_encode($returnArray);
+			
+			exit;
+		}
+		//exit;
 		if($addCartProductId && $orderqty)
 		{
-			$insertArray=array("refUserId"=>$user_id,"product_id"=>$addCartProductId,"quantity"=>1,"status"=>1,"date_time"=>current_time('mysql'));
+			//$wp_temp_cart_headerData['orderInfo']='Ticket Booking';
+			$wp_temp_cart_headerData['paymentStatus']=0;
+			$wp_temp_cart_headerData['user_id']=$user_id;
+			$wp_temp_cart_headerData['CreatedDate']=current_time('mysql');
+			$wp_temp_cart_headerData['sessionUpdate']=current_time('mysql');
 			
-			$insetedTemp_id=array();
+			$wp_temp_cart_id=0;
 			
-			for($i=0; $i<$orderqty;$i++)
-			{
-				$insetedTemp_id[]=$wpdb->insert( $wpdb->prefix.'temp_cart', $insertArray );
-			}
-			if(!empty($insetedTemp_id))
-			{
-				$returnArray['success']['container']='AddCardMessage'.$addCartProductId;
+			/*var_dump($_SESSION["wp_temp_cart_id"]);
+			exit;*/
+			
+			if(!isset($_SESSION["wp_temp_cart_id"]))
+			{	
+				$wp_temp_cart_id=$wpdb->insert( $wpdb->prefix.'temp_cart_header', $wp_temp_cart_headerData );
 				
-				$returnArray['success']['message']="Product has been added successfully. Click <a href='".site_url('view-shop-cart')."' class='shopForms'>here</a> view you cart.";
+				$wp_temp_cart_id=$wpdb->insert_id;
+					
+				$_SESSION["wp_temp_cart_id"]=$wp_temp_cart_id;
+			}
+			else
+			{	
+				$wp_temp_cart_id=$_SESSION["wp_temp_cart_id"];
+				
+				$wpdb->update($wpdb->prefix.'temp_cart_header',$wp_temp_cart_headerData,array("id"=>$wp_temp_cart_id));
+			}
+			
+			if($wp_temp_cart_id)
+			{
+				$defaultAddress=getDefaultAddress($user_id);
+				
+				/*var_dump($defaultAddress);
+				exit;*/
+				$address_id=0;
+				
+				if(!empty($defaultAddress))
+				{
+					$address_id=$defaultAddress[0]->id;
+				}
+				
+				$insertArray=array(
+								   "refUserId"=>$user_id,
+								   "refBookingId"=>$wp_temp_cart_id,
+								   "product_id"=>$addCartProductId,
+								   "quantity"=>1,
+								   "status"=>1,
+								   "date_time"=>current_time('mysql'),
+								   "refBookingId"=>$wp_temp_cart_id,
+								   "address_id"=>$address_id
+								 );
+				
+				$insetedTemp_id=array();
+				
+				
+				
+				for($i=0; $i<$orderqty;$i++)
+				{
+					if($wpdb->insert( $wpdb->prefix.'temp_cart', $insertArray ))
+					{
+						$insetedTemp_id[]=$wpdb->insert_id;
+					}
+					
+					
+						
+				}				
+				
+				if(!empty($insetedTemp_id))
+				{
+					$returnArray['success']['container']='AddCardMessage'.$addCartProductId;
+					
+					$returnArray['success']['message']="Product has been added successfully. Click <a href='".site_url('view-shop-cart')."' class='shopForms'>here</a> view you cart.";
+				}
 			}
 		}
 		
@@ -425,7 +563,110 @@ function front_ajax_fn()
 		
 		exit;
 	}
+	if(isset($_POST["get_address"]) && $_POST["get_address"]=="yes")
+	{
 	
+		if ( $user_id == 0) {
+			$returnArray['errors']['message']="Your session has been expired. Please login <a href='".site_url('shop-login')."' class='shopForms'>here</a>";
+			echo json_encode($returnArray);
+			exit;
+		}
+		extract($_POST);
+		
+		$address_id= (int) $address_id;
+		
+		$userdataAddress=array();
+		
+		if($address_id)
+		{
+			$sql="SELECT * from ".$wpdb->prefix."useraddress WHERE refUserId = ".$user_id." AND id=".$address_id;
+	
+			$wp_useraddress=$wpdb->get_results( $sql );
+			
+				
+			if(!empty($wp_useraddress))
+			{
+				$returnArray['success']['message']=1;
+				
+				$userdataAddress["mobile"]=$wp_useraddress[0]->mobile;
+				$userdataAddress["address_1"]=$wp_useraddress[0]->address_1;
+				$userdataAddress["address_2"]=$wp_useraddress[0]->address_2;
+				$userdataAddress["emirate"]=$wp_useraddress[0]->emirate;
+				$userdataAddress["location"]=$wp_useraddress[0]->location;
+				$userdataAddress["po_box"]=$wp_useraddress[0]->po_box ;				
+				$returnArray['success']['values']=$userdataAddress;
+				
+				echo json_encode($returnArray);
+				
+				exit;
+			}
+		}	
+	}
+	if(isset($_POST["updateAddress_user"]) && $_POST["updateAddress_user"]=="yes")
+	{
+		$errors=array();
+		
+		extract($_POST);
+		
+		if ( $user_id == 0) {
+			$errors['errors']['message']="Your session has been expired. Please login <a href='".site_url('shop-login')."' class='shopForms'>here</a>";
+			echo json_encode($errors);
+			exit;
+		}
+		
+		if(isset($emirate) && $emirate=="")
+			$errors['error']['emirate']='Emirate required';
+
+		if(isset($location) && $location=="")
+			$errors['error']['location']='Area required';
+			
+		if(isset($po_box) && $po_box=="")
+			$errors['error']['po_box']='P.O. Box required';
+
+		if(isset($address_1) && $address_1=="")
+			$errors['error']['address_1']='Address 1 required';
+			
+		if(isset($mobile) && $mobile=="")
+			$errors['error']['mobile']='Mobile Number required';
+		
+		if(empty($errors))
+		{
+			$userAddressDetails=array(
+										  "refUserId"=>$user_id,
+										  "mobile"=>$mobile,
+										  "emirate"=>$emirate,
+										  "location"=>$location,
+										  "address_1"=>$address_1,
+										  "address_2"=>$address_2,
+										  "po_box"=>$po_box,
+										  "date"=>date('Y-m-d H:i:s')
+									  );
+			
+			/*var_dump($manageAddress);
+			exit;*/
+			// Add a shipping address
+			
+			if($manageAddress==0)
+			{
+				ooco_add_user_address($user_id,$userAddressDetails);
+				
+				$errors['success']['message']=__('Address has been added Successfuly.');
+				
+				$errors['success']['newOptions']=getUserAddressDropdown($user_id);
+			}
+			else
+			{				
+				ooco_update_user_address($userAddressDetails,array("id"=>$manageAddress,"refUserId"=>$user_id));
+				
+				$errors['success']['message']=__('Address has been Updated Successfuly.');
+				
+				$errors['success']['newOptions']=getUserAddressDropdown($user_id);
+			}
+			echo json_encode($errors);
+		}
+		else
+			echo json_encode($errors);	
+	}
 	exit;
 }
 
@@ -433,6 +674,22 @@ add_action('wp_ajax_my_front_end_action', 'front_ajax_fn');
 
 add_action('wp_ajax_nopriv_my_front_end_action', 'front_ajax_fn');
 
+function updateData($tableName,$updateData,$where)
+{
+	global $wpdb;
+	
+	//mysql
+	$return=0;
+	
+	//var_dump($updateData);
+	
+	if(!empty($updateData))
+	{	
+		if($wpdb->update( $wpdb->prefix.$tableName, $updateData, $where))		
+		$return=1;
+	}	
+	return $return;	
+}
 function ooco_add_user_address($user_id,$details=array())
 {
 	global $wpdb;
@@ -444,15 +701,30 @@ function ooco_add_user_address($user_id,$details=array())
 		
 	return $return;
 }
+function ooco_update_user_address($details=array(),$where=array())
+{
+	global $wpdb;
+	
+	$return=0;
+	
+	if(!empty($details) && !empty($where))
+		$return=$wpdb->update( $wpdb->prefix.'useraddress', $details, $where);	
+		
+	return $return;
+}
 function remove_admin_bar()
 {
 	if ( ! current_user_can('manage_options') ) {
 		remove_action( 'wp_footer', 'wp_admin_bar_render', 1000 );
 	}
 }
+add_action('get_header', 'my_filter_head');
+
+function my_filter_head() {
+	remove_action('wp_head', '_admin_bar_bump_cb');
+}
+
 add_action('wp_footer', 'remove_admin_bar');
-
-
 
 add_action('wp_enqueue_scripts', 'inkthemes_enqueue_comment_reply');
 
@@ -464,49 +736,4 @@ function user_address_delete($user_id)
 	
 	$wpdb->query($wpdb->prepare( "DELETE FROM ".$wpdb->prefix."useraddress WHERE refUserId = %d",  $user_id));	
 }
-function getProductAvailability($product_id,$reqQty=0,$temp_book=1)
-{
-	$availability=0;	
-}
-function getProductById($product_id)
-{
-	$productDetails=get_post( $product_id ,ARRAY_A);
-	
-	if(!empty($productDetails))
-		return $productDetails;
-}
-function deleteOldCart()
-{
-	global $wpdb;
-	
-	$delCartQuery="SELECT * from ".$wpdb->prefix."_temp_cart WHERE status=1";
-	
-	$bookingdetailwksp=$wpdb->get_results( $delCartQuery );
-	
-	if(!empty($bookingdetailwksp))
-	{
-		foreach($bookingdetailwksp as $bookingdetail)
-		{
-			if($bookingdetail->checkedout)
-			{
-				if(TIMESTAMPDIFF($bookingdetail->sessionUpdate)>30)
-				{
-					//var_dump(TIMESTAMPDIFF($bookingdetail->sessionUpdate));
-					//$this->updateTableData('bookingdetailwksp',$bookingdetail->id,array('status'=>0));
-				}
-			}
-			else
-			{
-				if(TIMESTAMPDIFF($bookingdetail->sessionUpdate)>15)
-				{
-					//var_dump(TIMESTAMPDIFF($bookingdetail->sessionUpdate));
-					
-					//$this->updateTableData('bookingdetailwksp',0,array('status'=>0),array('refBookingId'=>$bookingheader->id));
-					
-					//$this->updateTableData('bookingdetailwksp',$bookingdetail->id,array('status'=>0));					
-				}
-			}
-		}
-	}
-	
-}
+

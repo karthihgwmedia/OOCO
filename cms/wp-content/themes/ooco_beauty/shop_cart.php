@@ -22,7 +22,9 @@
     <div cass="columns twelve">
       <div class="columns one">&nbsp;</div>
       <div class="columns ten"> 
-      	<a href="<?php echo site_url('view-shop-cart')?>" class="shopForms"><?php echo __("View Cart")?></a>
+      	<a href="<?php echo site_url('view-shop-cart')?>" class="shopForms" id="viewCartLink"><?php echo __("View Cart")?></a>
+        <a href="<?php echo site_url('confirm-address')?>" class="shopForms" id="confirmAddress"></a>
+         <a href="<?php echo site_url('order-summary')?>" class="shopForms" id="ordersummary"></a>
         <a href="<?php echo site_url('shop-login')?>?message=confirm" class="confirmLogin" title="confirmLogin"></a>
        </div>
       <div class="columns one">&nbsp;</div>
