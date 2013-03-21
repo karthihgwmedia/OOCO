@@ -2,6 +2,7 @@
 session_start();
 include_once get_template_directory() . '/functions/inkthemes-functions.php';
 include_once get_template_directory() . '/functions/ooco_cart_function.php';
+include_once get_template_directory() . '/functions/ooco_payment_functions.php';
 
 $functions_path = get_template_directory() . '/functions/';
 /* These files build out the options interface.  Likely won't need to edit these. */
@@ -175,9 +176,10 @@ function front_ajax_fn()
 				// Create a user
 				$user_id = wp_insert_user( $user_det );
 				
-				/*// Update the user meta details
-				if( !empty( $_POST['contact_no'] ) )
-					update_user_meta( $user_id, 'ooco_user_contact_no', $_POST['contact_no'] );*/
+				// Update the user meta details
+				
+				if( !empty( $_POST['mobile'] ) )
+					update_user_meta( $user_id, 'ooco_user_contact_no', $mobile );
 				
 				$userAddressDetails=array(
 											  "refUserId"=>$user_id,
@@ -667,6 +669,48 @@ function front_ajax_fn()
 		else
 			echo json_encode($errors);	
 	}
+	if(isset($_POST["deleteuserAddress"]) && $_POST["deleteuserAddress"]=="yes")
+	{
+		extract($_POST);
+		
+		$errors=array();
+		
+		if ( $user_id == 0) {
+			$errors['errors']['message']="Your session has been expired. Please login <a href='".site_url('shop-login')."' class='shopForms'>here</a>";
+			echo json_encode($errors);
+			exit;
+		}
+		if($delAddConId)
+		{	
+			$useraddresssql="SELECT * from ".$wpdb->prefix."useraddress WHERE refUserId = ".$user_id." AND status=1 AND id=".$delAddConId;
+	
+			$wp_useraddress=$wpdb->get_results( $useraddresssql );
+			
+			if(!empty($wp_useraddress))
+			{						
+				if($wp_useraddress[0]->defaultAddress==0)			
+				{
+					$wpdb->query($wpdb->prepare( "DELETE FROM ".$wpdb->prefix."useraddress WHERE refUserId = %d AND id= %d ",  $user_id,$delAddConId));
+					
+					$errors['success']['message']=__("Address has been Deleted");
+					
+					$errors['success']['delAddConId']="userAddressDetails".$delAddConId;
+				}
+				else
+				{
+					$errors['error']['message']=__("Can't delete the default address");
+				}
+			}
+			else
+			{
+				$errors['error']['message']=__("Can't Find this address. Please refresh your page.");
+			}
+		}
+		
+		echo json_encode($errors);
+		exit;
+	}
+	
 	exit;
 }
 

@@ -3,8 +3,13 @@
 	Template Name: OOCO Shop Login
 */
 ?>
-<div id="loginPage" class="userForms">
-<form id="loginFrm" name="loginFrm" action="#" method="post">
+<div id="loginPage">
+<div class="clsProductTle"><?php echo __("My Cart")?> </div>
+  <div class="clsBenefitsDesc">
+    <p>Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
+  </div>
+<div class="userForms">
+	<form id="loginFrm" name="loginFrm" action="#" method="post">
   <div class="FrmDesc formField">
     <div class="columns three left clsTitle"><?php echo __("Log-in")?></div>
     <div class="columns eight left clsFrmDesc">
@@ -12,7 +17,7 @@
 			if(isset($_GET["message"]) && $_GET["message"]=="confirm")
 				echo __("Please confirm your details");
             else    
-				echo __("If you are a new customer please register").'<a href="'.site_url('shop-register').'" class="shopForms">'. __("HERE").'</a>.';
+				echo __("If you are a new customer please register").' <a href="'.site_url('shop-register').'" class="shopForms">'. __("HERE").'</a>.';
 		?>
     </div>
     <div class="clear"></div>
@@ -36,6 +41,7 @@
     <input type="submit" name="LoginfrmSubmit" id="LoginfrmSubmit" value="submit" class="boxShadow"/>
   </div>
 </form>
+</div>
 </div>
 <script type="text/javascript">
 jQuery(document).ready(function($){

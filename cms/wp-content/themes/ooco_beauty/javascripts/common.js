@@ -70,7 +70,8 @@ jQuery(document).ready(function($){
 					enable:true,
 				},
 				advanced:{
-					updateOnContentResize: true
+					updateOnContentResize: true,
+					autoScrollOnFocus : false
 				}
 			}); 
 			formScorllApplied=true;
@@ -234,6 +235,8 @@ jQuery(document).ready(function($){
 		e.preventDefault();
 		var shopFormsURL=$(this).attr("href");
 		
+		$("#ajax .shopLoad").html("<div class='popupLoad'><img src='"+template_directory_uri+"/images/pop_up_ajax-loader.gif' /></div>");
+		
 		$("#ajax .shopLoad").load(shopFormsURL,function(response, status, xhr){
 			if (status == "error") {
 						
@@ -245,10 +248,24 @@ jQuery(document).ready(function($){
 			}
 		})
 	})
+	jQuery("#countinueShopping").live("click",function(e){
+		e.preventDefault();
+		$("#productList").trigger('click');
+	})
+	
+	jQuery("#editMyAccountDetail").live("click",function(e){
+		e.preventDefault();
+		$("#editmyaccountLink").trigger('click');
+	})
+	jQuery("#editMyAccount").live("click",function(e){
+		e.preventDefault();
+		$("#myaccountLink").trigger('click');
+	})
+	
 	jQuery("#ajax #shopOrder .userForms #emirate,#ajax #shopOrder .userForms #location,#ajax #shopOrder .userForms #po_box,#ajax #shopOrder .userForms #regfrmSubmit").live("focus",function(){
 		jQuery("#ajax #shopOrder .userForms").mCustomScrollbar("scrollTo","bottom");	
 	})	
-	jQuery("#ajax #shopOrder .userForms #regfrmSubmit,#ajax #shopOrder .userForms #regfrmSubmitNo").live("click",function(){
+	jQuery("#ajax #shopOrder .userForms #regfrmSubmit").live("click",function(){
 		jQuery("#ajax #shopOrder .userForms").mCustomScrollbar("scrollTo","bottom");	
 	})
 	jQuery("#emirate").live("change",function(){
@@ -314,6 +331,7 @@ jQuery(document).ready(function($){
 			}})
 		}
 	})
+	
 })
 function get_city(country_val)
 {

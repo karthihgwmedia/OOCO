@@ -208,7 +208,7 @@ function get_drop_down_box($table_name,$where='',$valueField='',$displayField=''
 	return $options;
 	
 }
-function printAddress($user_id,$addressId=0)
+function printAddress($user_id,$addressId=0,$returnBy='text')
 {
 	global $wpdb;
 	
@@ -237,11 +237,18 @@ function printAddress($user_id,$addressId=0)
 				$optionslabel['emirate']='<span class="userEmirate">'.ucfirst($emirateData[0]->name).'</span>';
 				
 			$optionslabel['country']='<span class="userEmirate">United Arab Emirates</span>';	
+			
+			$optionslabel['po_box']='<span class="userPOBox">'.$wp_useradd->po_box.'</span>';	
 		}
 	}
 	
 	if(!empty($optionslabel))
-		return implode("",$optionslabel);
+	{
+		if($returnBy=='text')
+			return implode("",$optionslabel);
+		else
+			return $optionslabel;
+	}
 	else
 		return "";
 }

@@ -26,8 +26,12 @@
 ?>
 
 <div class="viewCartCon">
+  <div class="clsProductTle"><?php echo __("My Cart")?> </div>
+  <div class="clsBenefitsDesc">
+    <p>Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
+  </div>
   <div class="errorCon"></div>
-    <form id="saveAddressFrm" name="saveAddressFrm" method="post" action="#">
+  <form id="saveAddressFrm" name="saveAddressFrm" method="post" action="#">
     <div class="userForms">
       <?php
 	if(!empty($wp_temp_carts))
@@ -36,7 +40,7 @@
 		{
 	?>
       <div class="columns twelve productCon" id="addCartProduct<?php echo $wp_temp_cart->id ?>">
-        <div class="columns four product">
+        <div class="columns three product">
           <div class="productTte">
             <?php 
 					$productDetails = getProductById($wp_temp_cart->product_id);
@@ -54,32 +58,44 @@
             <input type="hidden" name="cartIds[]" value="<?php echo $wp_temp_cart->id?>" />
           </div>
         </div>
-        <div class="columns four selectAddress">
+        <div class="columns five selectAddress">
           <select name="receiverAddress<?php echo $wp_temp_cart->id?>" id="receiverAddress<?php echo $wp_temp_cart->id?>">
             <option value="0"><?php echo __("Select Address")?></option>
             <?php 
                                 echo getUserAddressDropdown($user_id,$wp_temp_cart->address_id);
                             ?>
           </select>
-          <p class="addAddress"><a href="<?php echo site_url("add-address");?>"><?php echo __("Add")?></a></p>
+          <p class="addAddress">
+          	<a href="<?php echo site_url("add-address");?>"></a>
+          </p>
+          <div class="clear"></div>
         </div>
         <div class="clear"></div>
       </div>
       <?php
 		}
 ?>
-	</div>	
-      <div class="proceedToCheckOut frmSubmit">
-        <input type="submit" name="SaveAddressSubmit" id="SaveAddressSubmit" value="<?php echo __("Confirm")?>" class="boxShadow"/>
-      </div>
-    </form>
-    <?php
+    </div>
+    <div class="proceedToCheckOut frmSubmit">
+      <input type="submit" name="SaveAddressSubmit" id="SaveAddressSubmit" value="<?php echo __("Confirm")?>" class="boxShadow"/>
+    </div>
+  </form>
+  <?php
     }
 	else
 	{
 		echo "<p>".__("Your cart is empty")."</p>";
 	}
-?> 
+?>
+  <div class="MyaccountOptions frmSubmit">
+    <input type="submit" name="OrderHistory" id="OrderHistory" value="<?php echo __("Order History")?>" class="boxShadow"/>
+    &nbsp;&nbsp;&nbsp;
+    <input type="submit" name="editMyAccount" id="editMyAccount" value="<?php echo __("Myaccount")?>" class="boxShadow"/>
+  </div>
+  <div class="MyaccountOptions frmSubmit">
+    <input type="submit" name="countinueShopping" id="countinueShopping" value="<?php echo __("Continue shopping")?>" class="boxShadow"/>
+  </div>
+</div>
 </div>
 <script type="text/javascript">
 jQuery(function(){ 

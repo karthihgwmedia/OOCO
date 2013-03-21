@@ -3,9 +3,19 @@
 	Template Name: OOCO Shop Register
 */
 ?>
-
-<div id="registerPage" class="userForms">
-  <form id="registerFrm" name="registerFrm" action="#" method="post">
+<style type="text/css">
+.userForms
+{
+	height:450px;
+}
+</style>
+<div id="registerPage">
+  <div class="clsProductTle"><?php echo __("My Cart")?> </div>
+  <div class="clsBenefitsDesc">
+    <p>Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
+  </div>
+  <div class="userForms">
+	  <form id="registerFrm" name="registerFrm" action="#" method="post">
     <div class="FrmDesc formField">
       <div class="columns three left clsTitle">Register</div>
       <div class="columns eight left clsFrmDesc"> If you are a alreay customer please login <a href="<?php echo site_url('shop-login')?>" class="shopForms">HERE</a>. </div>
@@ -95,6 +105,7 @@
       <input type="submit" name="regfrmSubmit" id="regfrmSubmitNo" value="<?php echo __("No")?>" class="boxShadow"/>
     </div>
   </form>
+  </div>
 </div>
 <script type="text/javascript">
 jQuery(document).ready(function($){
@@ -119,7 +130,13 @@ jQuery(document).ready(function($){
 								   {
 										jQuery.each(responce.error,function(index,val){	
 											//alert(index);
-											jQuery("#"+index).parent().append("<p class='error'>"+val+"</p>");											
+											if(index=="email" || index=="mobile" || index=="name" || index=="password")
+											{
+												jQuery("#ajax #shopOrder .userForms").mCustomScrollbar("scrollTo","top");	
+											}
+											jQuery("#"+index).parent().append("<p class='error'>"+val+"</p>");
+											
+											jQuery("#"+index).focus();											
 										})
 								   }
 								   if(responce.success)
@@ -130,9 +147,9 @@ jQuery(document).ready(function($){
 									   
 									   if(responce.success.redirect=='product_page')
 									   {
-									   		$(".closeShop").trigger("click");
+									   		//$(".closeShop").trigger("click");
 											
-											$(".shopOrderLink").trigger("click");
+											$("#productList").trigger("click");
 									   }
 									   else if(responce.success.redirect=='login_page')
 									   {	

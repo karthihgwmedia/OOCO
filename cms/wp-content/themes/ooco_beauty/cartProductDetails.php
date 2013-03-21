@@ -1,4 +1,13 @@
+<?php
+/*
+	Template Name: OOCO Produts pop up
+*/
+?>
 <div id="productDetailsPage">
+ <div class="clsProductTle"> <?php echo __("OCÓO SHOP")?> </div>
+  <div class="clsBenefitsDesc">
+    <p><?php echo __("Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Pellentesque habitant morid est malesuada laoreet.")?></p>
+  </div>
   <div class="AddCardMessage" id="messageBox"> </div>
   <?php
 $ooco_product_args = array(

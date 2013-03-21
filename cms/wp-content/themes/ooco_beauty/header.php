@@ -44,6 +44,7 @@
 <script type="text/javascript">
 	var site_url = '<?php echo get_option('siteurl'); ?>';
 	var admin_url = '<?php echo admin_url( 'admin-ajax.php' ) ?>';
+	var template_directory_uri = '<?php echo get_template_directory_uri( ) ?>';
 </script>
 <link href="<?php echo get_template_directory_uri(); ?>/slide_animation.css" media="all" rel="stylesheet" type="text/css"/>
 <?php wp_head(); ?>

@@ -46,6 +46,7 @@ add_action( 'init', 'ooco_product_install' );
 
 // Add what we did meta box
 add_action( 'admin_init', 'ooco_product_attribute_metabox' );
+
 function ooco_product_attribute_metabox(){
 	
 	add_meta_box( 'ooco_product_attribut_metabox', __( 'Product Details' ), 'ooco_product_details_input', 'ooco_product' ); 		

@@ -1241,9 +1241,10 @@ aside .slimContentContainer {
     box-shadow: 0 9px 12px rgba(50, 50, 50, 0.75);
     left: 38%;
     position: absolute;
-    top: 0;
+    top: 30px;
     width: 27%;
     z-index: 10000;
+	padding:10px;
 }
 .userMangeAddress .userForms .formField .clsInput
 {
@@ -1303,10 +1304,14 @@ aside .slimContentContainer {
 }
 .removeCartLink
 {
-	height: 30px;
-    width: 30px;
+	height: 34px;
+    width: 35px;
 	display:block;
-	background:url(images/close.png) no-repeat;
+	background:url(images/close.png) no-repeat 0 0;
+}
+.removeCartLink:hover
+{
+	background-position:-34px 0;
 }
 .SummeryAddressHeader,.SummeryAddressProduct,.SummeryAddressQty
 {
@@ -1370,4 +1375,41 @@ aside .slimContentContainer {
 .OrderSummeryQty
 {
 	text-align:center;
+}
+.popupLoad
+{
+	min-height:450px;
+	text-align:center;	
+}
+.popupLoad img
+{
+	padding-top:205px;	
+}
+.selectAddress
+{
+	padding:0;		
+}
+.selectAddress select
+{
+	width:80%;
+	padding:6px;
+	float:left;
+}
+.addAddress
+{
+	display: inline-block;
+    float: left;
+    margin-left: 5px;
+    position: relative;
+}
+.addAddress a
+{
+	background:url(images/add.png) no-repeat;
+	height:35px;
+	width:35px;
+	display:block;
+}
+.addAddress a:hover
+{
+	background-position:-34px 0;
 }
