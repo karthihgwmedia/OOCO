@@ -208,11 +208,14 @@ function get_drop_down_box($table_name,$where='',$valueField='',$displayField=''
 	return $options;
 	
 }
-function printAddress($user_id,$addressId=0,$returnBy='text')
+function printAddress($user_id,$addressId=0,$returnBy='text',$html_tag='span')
 {
+	
 	global $wpdb;
 	
 	$sql="SELECT * from ".$wpdb->prefix."useraddress WHERE refUserId = ".$user_id." AND status=1 AND id =".$addressId;
+	
+	//echo $sql;
 	
 	$wp_useraddress=$wpdb->get_results( $sql );
 	
@@ -220,25 +223,25 @@ function printAddress($user_id,$addressId=0,$returnBy='text')
 	{
 		foreach($wp_useraddress as $wp_useradd)
 		{
-			$optionslabel['mobile'] = '<span class="userMobile">'.$wp_useradd->mobile.'</span>';
+			$optionslabel['mobile'] = '<'.$html_tag.' class="userMobile">'.$wp_useradd->mobile.'</'.$html_tag.'>';
 			
-			$optionslabel['address_1']='<span class="userAddress1">'.$wp_useradd->address_1.'</span>';
+			$optionslabel['address_1']='<'.$html_tag.' class="userAddress1">'.$wp_useradd->address_1.'</'.$html_tag.'>';
 			
-			$optionslabel['address_2']='<span class="userAddress2">'.$wp_useradd->address_2.'</span>';
+			$optionslabel['address_2']='<'.$html_tag.' class="userAddress2">'.$wp_useradd->address_2.'</'.$html_tag.'>';
 			
 			$locationData=getValueById('location',$wp_useradd->location);
 			
 			if(!empty($locationData[0]))
-				$optionslabel['location']='<span class="userLocation">'.ucfirst($locationData[0]->name).'</span>';
+				$optionslabel['location']='<'.$html_tag.' class="userLocation">'.ucfirst($locationData[0]->name).'</'.$html_tag.'>';
 			
 			$emirateData=getValueById('emirate',$wp_useradd->emirate);
 			
 			if(!empty($emirateData[0]))
-				$optionslabel['emirate']='<span class="userEmirate">'.ucfirst($emirateData[0]->name).'</span>';
+				$optionslabel['emirate']='<'.$html_tag.' class="userEmirate">'.ucfirst($emirateData[0]->name).'</'.$html_tag.'>';
 				
-			$optionslabel['country']='<span class="userEmirate">United Arab Emirates</span>';	
+			$optionslabel['country']='<'.$html_tag.' class="userEmirate">United Arab Emirates</'.$html_tag.'>';	
 			
-			$optionslabel['po_box']='<span class="userPOBox">'.$wp_useradd->po_box.'</span>';	
+			$optionslabel['po_box']='<'.$html_tag.' class="userPOBox">'.$wp_useradd->po_box.'</'.$html_tag.'>';	
 		}
 	}
 	

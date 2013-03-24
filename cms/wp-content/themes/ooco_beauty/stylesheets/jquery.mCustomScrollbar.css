@@ -32,7 +32,7 @@
 	padding-bottom:40px;
 }
 .mCSB_scrollTools .mCSB_draggerRail{
-	width:2px;
+	width:5px;
 	height:100%;
 	margin:0 auto;
 	-webkit-border-radius:10px;
@@ -43,7 +43,7 @@
 	cursor:pointer;
 	width:100%;
 	height:30px;
-	left:-1px;
+	/*left:-1px;*/
 }
 .mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar{
 	/*width:4px;
@@ -151,8 +151,8 @@
 	opacity:1;
 }
 .mCSB_scrollTools .mCSB_draggerRail{
-	/*background:#000;*/ /* rgba fallback
-	background:rgba(0,0,0,0.4); */
+	/*background:#000;  rgba fallback*/
+	background:rgba(0,0,0,0.4); 
 	:"alpha(opacity=40)"; -ms-filter:"alpha(opacity=40)"; /* old ie */
 }
 .mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar{
@@ -160,7 +160,8 @@
 	background:rgba(255,255,255,0.75); */
 	/*background:url(../images/scroller.png) no-repeat;*/
 	background:#000000;
-	filter:"alpha(opacity=75)"; -ms-filter:"alpha(opacity=75)"; /* old ie */
+	filter:"alpha(opacity=75)"; -ms-filter:"alpha(opacity=75)"; /* old ie */ 
+	border-radius: 10px 10px 10px 10px;
 }
 .mCSB_scrollTools .mCSB_dragger:hover .mCSB_dragger_bar{
 	/* background:rgba(255,255,255,0.85);

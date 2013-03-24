@@ -61,6 +61,17 @@ jQuery(document).ready(function($){
 	jQuery("aside.animate .slimContentContainer").live("mouseenter",function(){
 		jQuery(this).niceScroll({cursorborderradius :"0px",cursorcolor:"#000"}); 
 	})
+	
+	/*jQuery(this).mCustomScrollbar({
+		scrollButtons:{
+					enable:true,
+		},
+		advanced:{
+			updateOnContentResize: true,
+				autoScrollOnFocus : false
+		}
+	});*/
+	
 	jQuery("#ajax #shopOrder .userForms").live("mouseenter",function(){
 		
 		if(!formScorllApplied)
@@ -120,6 +131,29 @@ jQuery(document).ready(function($){
 			return false;
 		})
 	
+	jQuery(".payPopups").click(function(e){
+		e.preventDefault();	
+		
+		jQuery("#loading").slideDown();
+		
+		var shopOrderLink=jQuery(this).attr("href");
+		
+		shopOrderOpen=false;
+		
+		jQuery('#ajax').load(shopOrderLink,function(response, status, xhr){
+				if (status == "error") {
+						
+				}
+				else
+				{
+					formScorllApplied=false;
+					
+					jQuery("#ajax #shopOrder .userForms").trigger("mouseenter");
+					
+					setTimeout('showShopFrm()',1000);
+				}
+		 });
+	})
 	jQuery(".shopOrderLink").click(function(e){
 											
 		e.preventDefault();
@@ -145,7 +179,9 @@ jQuery(document).ready(function($){
 		
 		jQuery("#menu .shopOrderLink").addClass("current");
 		
-		var shopOrderLink=jQuery(".shopOrderLink").attr("href");
+		//var shopOrderLink=jQuery(".shopOrderLink").attr("href");
+		
+		var shopOrderLink=jQuery(this).attr("href");
 		
 		jQuery('#ajax').load(shopOrderLink,function(response, status, xhr){
 				if (status == "error") {
@@ -153,12 +189,21 @@ jQuery(document).ready(function($){
 				}
 				else
 				{
+					formScorllApplied=false;
+					
+					jQuery("#ajax #shopOrder .userForms").trigger("mouseenter");
+					
 					setTimeout('showShopFrm()',1000);
 				}
 		 });
 		
 		
 	})
+	$("#OrderHistory").click(function(e){
+		 e.preventDefault();
+		jQuery("#orderHistoryLink").trigger("click");
+	})
+	
 	jQuery("a.home").live("click",function(e){
 		e.preventDefault();
 		
@@ -244,15 +289,24 @@ jQuery(document).ready(function($){
 			else
 			{
 				formScorllApplied=false;	
+				jQuery("#ajax #shopOrder .userForms").trigger("mouseenter");
 				//setTimeout('showShopFrm()',1000);
 			}
 		})
 	})
-	jQuery("#countinueShopping").live("click",function(e){
+	jQuery("#countinueOneToMany").live("click",function(e){
 		e.preventDefault();
 		$("#productList").trigger('click');
 	})
-	
+	jQuery("#countinueOneToOne").live("click",function(e){
+		e.preventDefault();
+		$("#countinueOneToOneShop").trigger('click');
+	})
+	jQuery("#countinueShopping").live("click",function(e){
+		e.preventDefault();
+		$("#myaccountLink").trigger('click');
+	})
+	//countinueShopping
 	jQuery("#editMyAccountDetail").live("click",function(e){
 		e.preventDefault();
 		$("#editmyaccountLink").trigger('click');
@@ -386,4 +440,7 @@ function hideLoader()
 		previousPage=nav_cur_page_id;
 	});	
 	
+}
+function isInt(n) {
+   return typeof n === 'number' && n % 1 == 0;
 }

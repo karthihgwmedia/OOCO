@@ -12,9 +12,35 @@
  * @package WordPress
  * 
  */
+ get_header(); 
 ?>
-<?php get_header(); ?>
 <div class="row">
+  <a href="<?php echo site_url('pay-success')?>?success_invoice=<?php echo $_GET["pay-success"]?>" class="payPopups" id="payThankYouLink"></a>
+  <a href="<?php echo site_url('pay-fail')?>" class="payPopups" id="payFailLink"></a>
+  <?php 
+	
+	if(isset($_GET["pay-success"]))
+	{?>
+		<script type="text/javascript">
+			jQuery(document).ready(function($){
+				//jQuery(".shopOrderLink").trigger("click");
+				<?php
+					if($_GET["pay-success"]!=0)
+						echo 'jQuery("#payThankYouLink").trigger("click");';
+					else
+						echo 'jQuery("#payFailLink").trigger("click");';
+				?>
+					
+				
+				/*jQuery("#payThankYouLink").click(function(){	
+					alert('call');
+				})*/
+			})
+			
+		</script>	
+	<?php
+	}
+	?>
   <div class="columns twelve"> <a href="#"><img src="<?php echo get_template_directory_uri(); ?>/images/main_logo.png" class="main_logo" /></a></div>
   <div class="clear"></div>
   <div class="columns twelve" id="threeCols">
@@ -32,7 +58,7 @@
       </div>
     </div>
     <div class="four columns" id="clsOcooOrders">
-      <div class="orderbtn"> <a class="shopOrderLink" href="#shopOrder">Order</a> </div>
+      <div class="orderbtn"> <a class="shopOrderLink" href="<?php echo site_url('shoporder')?>">Order</a> </div>
       <div class="clsProductCon">
       <?php
 	  	$ooco_product_args = array(
@@ -79,7 +105,7 @@
                           	<strong><?php echo $ooco_product->post_title?></strong> <?php echo substr($ooco_product->post_content,0,30)?> 
                           </div>
                           <div class="clsFloatRight clsOrderLink"> 
-                          	<a class="shopOrderLink" href="#shopOrder">Order</a> 
+                          	<a class="shopOrderLink" href="<?php echo site_url('shoporder?product_id='.$ooco_product->ID)?>">Order</a> 
                           </div>
                           <div class="clear"></div>
                         </div>

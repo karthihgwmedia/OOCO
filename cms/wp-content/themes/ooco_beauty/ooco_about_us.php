@@ -192,12 +192,12 @@
 					  <div class="columns six">
 						<h3 class="asideTitle"><?php echo $ooco_product_detail_no_bottles ?> <span><?php echo $ooco_product_detail_no_bottles_text?></span></h3>
 						<div class="prductDesc"> <?php echo wpautop($ooco_product->post_content)?> </div>
-						<div class="productAddToCart"> <a href="#"><span><?php echo __("Add to cart")?></span></a> </div>
+						<div class="productAddToCart"> <a class="shopOrderOneLink" href="<?php echo site_url('shoporder?product_id='.$ooco_product->ID)?>"><span><?php echo __("Add to cart")?></span></a> </div>
 						<div class="productSocialShare clsFloatRight"> 
-                        	<a href="<?php echo $socialUrl?>" class="facebook socialShare" target="_blank"></a> 
-                            <a href="<?php echo $socialUrl?>" class="twitter socialShare" target="_blank"></a> 
-                            <a href="<?php echo $socialUrl?>" class="pinterest socialShare" target="_blank"></a> 
-                            <a href="<?php echo $socialUrl?>" class="instagram socialShare" target="_blank"></a> 
+                        	<a href="<?php echo "#"?>" class="facebook socialShare" target="_blank"></a> 
+                            <a href="<?php echo "#"?>" class="twitter socialShare" target="_blank"></a> 
+                            <a href="<?php echo "#"?>" class="pinterest socialShare" target="_blank"></a> 
+                            <a href="<?php echo "#"?>" class="instagram socialShare" target="_blank"></a> 
                             <div class="clear"></div>
                         </div>
                         <div class="clear"></div>
@@ -245,3 +245,46 @@
   <div class="clear"></div>
 </div>
 </aside>
+<script type="text/javascript">
+jQuery(".shopOrderOneLink").click(function(e){
+											
+		e.preventDefault();
+		
+		//console.log('call');
+		
+		if(shopOrderOpen)
+			return false;
+				
+		if(asideOpen)
+		{
+			asideOpen=false;
+			
+			jQuery("#"+nav_cur_page_id).addClass("animateOut");
+			
+			setTimeout('jQuery("#'+nav_cur_page_id+'").removeClass("animate");',1000);
+		}
+		shopOrderOpen=true;
+		
+		jQuery("#loading").slideDown();
+		
+		jQuery("#menu a").removeClass("current");
+		
+		jQuery("#menu .shopOrderLink").addClass("current");
+		
+		//var shopOrderLink=jQuery(".shopOrderLink").attr("href");
+		
+		var shopOrderLink=jQuery(this).attr("href");
+		
+		jQuery('#ajax').load(shopOrderLink,function(response, status, xhr){
+				if (status == "error") {
+						
+				}
+				else
+				{
+					setTimeout('showShopFrm()',1000);
+				}
+		 });
+		
+		
+	})
+</script>

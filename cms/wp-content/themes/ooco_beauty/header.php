@@ -8,6 +8,7 @@
  * @subpackage Starkers
  * @since Starkers 3.0
  */
+ 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html <?php language_attributes(); ?>>
@@ -46,7 +47,12 @@
 	var admin_url = '<?php echo admin_url( 'admin-ajax.php' ) ?>';
 	var template_directory_uri = '<?php echo get_template_directory_uri( ) ?>';
 </script>
+
 <link href="<?php echo get_template_directory_uri(); ?>/slide_animation.css" media="all" rel="stylesheet" type="text/css"/>
+<!--[if IE]>
+	<link href="<?php echo get_template_directory_uri(); ?>/slide_animation_ie.css" media="all" rel="stylesheet" type="text/css"/>
+<![endif]-->
+
 <?php wp_head(); ?>
 <link href="<?php echo get_template_directory_uri(); ?>/stylesheets/jquery.mCustomScrollbar.css" media="all" rel="stylesheet" type="text/css"/>
 

@@ -20,14 +20,36 @@ if ( $user_id == 0) {
 	$wp_temp_carts=array();
 	
 ?>
+<style type="text/css">
+#productDetailsPage .frmSubmit
+{
+	margin: 25px 0 10px;
+}
+#shopOrder .productCon {
+	border:0px;
+}
+.productBookedLabel
+{
+	margin:5px 0;	
+}
+.productBookedLabel .clsBookedQty,.productBookedLabel .clsBookedDeliverName,.productBookedLabel .clsBookedDeliverAddress
+{
+	padding:0 0 5px 0;
+	/*border-bottom:1px solid #9FA2A2	*/
+}
+.productBookedUser .clsBookedQty,.productBookedUser .clsBookedDeliverName,.productBookedUser .clsBookedDeliverAddress
+{
+	border-top:1px solid #9FA2A2 !important;
+}
+</style>
 <div id="productDetailsPage">
   <div class="AddCardMessage" id="messageBox"> </div>
-  <div class="userForms">
+  <div class="userForms" style="height:450px;">
 <?php
 
 $ooco_product_args = array(
 	'orderby'         => 'ooco_product_detail_qty',
-	'order'           => 'ASC',
+	'order'           => 'DESC',
 	'post_type'       => 'ooco_product',
 	'post_status'     => 'publish',
 	'numberposts'    => -1, 
@@ -107,6 +129,22 @@ if(!empty($ooco_products[0]))
         <?php
 	  	  if(!empty($wp_temp_carts))	
 		  {
+		  ?>
+          <div class="columns twelve productBookedLabel" id="productBookedByUser<?php echo $ooco_product->ID ?>">
+          	<div class="columns two">
+             	&nbsp;
+             </div>
+             <div class="columns two clsBookedQty">
+             	<div class="oderLabel"><?php echo __("Quantity")?></div>
+             </div>
+             <div class="columns four clsBookedDeliverName">
+             	<div class="oderLabel"><?php echo __("For:")?></div>
+             </div>
+             <div class="columns four clsBookedDeliverAddress">
+             	<div class="oderLabel"><?php echo __("To:")?></div>
+             </div>
+          </div>
+          <?php		  
 			  foreach($wp_temp_carts as $wp_temp_cart)
 			  {
 		  ?>      
@@ -115,17 +153,17 @@ if(!empty($ooco_products[0]))
                     	&nbsp;
                     </div>
 					<div class="columns two clsBookedQty">
-						<?php
+                    	<?php
 							echo $wp_temp_cart->quantity;
 						?>
 					</div>
-					<div class="columns four clsBookedDeliverName">
+					<div class="columns four clsBookedDeliverName">                    	
 						<?php
 							echo $wp_temp_cart->receiverName;
 						?>
 					</div>
 					<div class="columns four clsBookedDeliverAddress">
-						<?php
+                    	<?php
 							$userAddress=getUserAddressDropdown($wp_temp_cart->refUserId,$wp_temp_cart->address_id,'p');
 							if(!empty($userAddress))
 							{

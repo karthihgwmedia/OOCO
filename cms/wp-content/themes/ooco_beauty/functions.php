@@ -1,5 +1,6 @@
 <?php
 session_start();
+ini_set("memory_limit","500M");
 include_once get_template_directory() . '/functions/inkthemes-functions.php';
 include_once get_template_directory() . '/functions/ooco_cart_function.php';
 include_once get_template_directory() . '/functions/ooco_payment_functions.php';
@@ -315,7 +316,10 @@ function front_ajax_fn()
 			{
 				$updateCartData["address_id"]=$_POST["receiverAddress".$cartId];
 				
-				$updateCartData["receiverName"]=$_POST["receiverName".$cartId];
+				if($_POST["receiverName".$cartId]!="")
+					$updateCartData["receiverName"]=$_POST["receiverName".$cartId];
+				else
+					$updateCartData["receiverName"]=$current_user->display_name;;
 				
 				$updateCartData["date_time"]=current_time('mysql');
 				
@@ -376,6 +380,40 @@ function front_ajax_fn()
 		}
 			
 		$wp_temp_cart_id=$wpdb->insert_id;
+	}
+	if(isset($_POST["checkOrder"]) && $_POST["checkOrder"]=='yes')
+	{
+		$returnArray=array();
+		
+		if(isset($_SESSION["wp_temp_cart_id"]))
+		{
+			$wp_temp_cart_id=$_SESSION["wp_temp_cart_id"];
+			
+			$temp_cartsql="SELECT * from ".$wpdb->prefix."temp_cart WHERE refUserId = ".$user_id." AND status=1 AND refBookingId=".$wp_temp_cart_id;
+	
+			$temp_cart=$wpdb->get_results( $temp_cartsql );
+			
+			if(!empty($temp_cart))
+				$returnArray['error']['message']=__("You want to delete exsisting item in your cart ?");
+			else
+				$returnArray['success']['success']=1;
+			
+			
+		}
+		else
+			$returnArray['success']['success']=1;
+		
+		echo json_encode($returnArray);
+	}
+	if(isset($_POST["old_cart_Del"]) && $_POST["old_cart_Del"]=='yes')
+	{
+		$returnArray=array();
+		
+		$wpdb->query($wpdb->prepare( "DELETE FROM ".$wpdb->prefix."temp_cart WHERE refUserId = %d  ", $user_id));	
+		
+		$returnArray['success']['message']=__("Deleted successfully");
+		
+		echo json_encode($returnArray);
 	}
 	if(isset($_POST["addBulkCartProduct"]) && $_POST["addBulkCartProduct"]=='yes')
 	{
@@ -473,11 +511,16 @@ function front_ajax_fn()
 		
 		/*var_dump($availableItem);
 		exit;*/
+		
 		if($availableItem<0)
 		{
 			$returnArray['errors']['container']='AddCardMessage'.$addCartProductId;
 			
-			$returnArray['errors']['message']=__("We have limited quantity in our stock");
+			$returnArray['errors']['availability'] =getProductAvailability($addCartProductId);
+			
+			$returnArray['errors']['message'] =__("We have only  ".getProductAvailability($addCartProductId)." quantity in our stock");
+			
+			$returnArray['errors']['addCartProductId'] =$addCartProductId;
 			
 			echo json_encode($returnArray);
 			
@@ -533,9 +576,22 @@ function front_ajax_fn()
 								   "status"=>1,
 								   "date_time"=>current_time('mysql'),
 								   "refBookingId"=>$wp_temp_cart_id,
-								   "address_id"=>$address_id
+								   "address_id"=>0
 								 );
 				
+				if($countinueOneToOneShop=="true")
+				{	
+					$insertArray["receiverName"]=$current_user->display_name;
+					
+					$insertArray["address_id"]=$address_id;
+				}
+				else
+				{
+					//$insertArray["receiverName"]='';
+					
+					$insertArray["address_id"]=0;
+				}
+					
 				$insetedTemp_id=array();
 				
 				
@@ -546,16 +602,13 @@ function front_ajax_fn()
 					{
 						$insetedTemp_id[]=$wpdb->insert_id;
 					}
-					
-					
-						
 				}				
 				
 				if(!empty($insetedTemp_id))
 				{
 					$returnArray['success']['container']='AddCardMessage'.$addCartProductId;
 					
-					$returnArray['success']['message']="Product has been added successfully. Click <a href='".site_url('view-shop-cart')."' class='shopForms'>here</a> view you cart.";
+					$returnArray['success']['message']="Product has been added successfully."; // Click <a href='".site_url('view-shop-cart')."' class='shopForms'>here</a> view you cart.";
 				}
 			}
 		}
@@ -718,6 +771,213 @@ add_action('wp_ajax_my_front_end_action', 'front_ajax_fn');
 
 add_action('wp_ajax_nopriv_my_front_end_action', 'front_ajax_fn');
 
+add_action('wp_ajax_my_order_history', 'order_history');
+
+add_action('wp_ajax_my_order_history', 'order_history');
+
+add_action('wp_ajax_all_order_history', 'admin_order_history');
+
+add_action('wp_ajax_all_order_history', 'admin_order_history');
+
+add_action('wp_ajax_user_delivery_notes', 'admin_delivery_notes');
+
+add_action('wp_ajax_user_delivery_notes', 'admin_delivery_notes');
+
+function admin_delivery_notes()
+{
+	global $wpdb;
+	
+	$user_id=0;
+			
+	$current_user = wp_get_current_user();
+		
+	$user_id=$current_user->ID;
+	
+	$page = isset($_POST['page']) ? $_POST['page'] : 1;
+	
+	$rp = isset($_POST['rp']) ? $_POST['rp'] : 10;
+	
+	$sortname = isset($_POST['sortname']) ? $_POST['sortname'] : 'date_time';
+	
+	$sortorder = isset($_POST['sortorder']) ? $_POST['sortorder'] : 'desc';
+	
+	$query = isset($_POST['query']) ? $_POST['query'] : false;
+	
+	$qtype = isset($_POST['qtype']) ? $_POST['qtype'] : false;
+	
+	$invoice_id = isset($_GET['invoice_id']) ? $_GET['invoice_id'] : 0;
+	
+	$cart_headersql="SELECT * from ".$wpdb->prefix."confirm_cart WHERE status=1 AND refBookingId=".$invoice_id;
+	
+	$rows=$wpdb->get_results( $cart_headersql,ARRAY_A);
+	
+	//Make PHP handle the sorting
+	$sortArray = array();
+	foreach($rows AS $key => $row){
+		$sortArray[$key] = $row[$sortname];
+	}
+	
+	$sortMethod = SORT_ASC;
+	
+	if($sortorder == 'desc'){
+		$sortMethod = SORT_DESC;
+	}
+	
+	array_multisort($sortArray, $sortMethod, $rows);
+	$total = count($rows);
+	$rows = array_slice($rows,($page-1)*$rp,$rp);	
+	
+	header("Content-type: application/json");
+	$jsonData = array('page'=>$page,'total'=>$total,'rows'=>array());
+	
+	$productDetails=array();
+	
+	foreach($rows AS $row)
+	{
+		$row['refrence_id']="OOCO_".$row['refBookingId']."_".$row['id'];
+		
+		//$row['refrence_id'];
+		
+		$row['receiver_name']=$row['receiverName'];
+		
+		$productDetails = getProductById($row['product_id']);
+		
+		if(!empty($productDetails))
+		{
+			$row['product_name']=$productDetails['post_title']." ".__("pack");
+		}
+		//var_dump(printAddress($row['refUserId'],$row['delivery_address']));
+		
+		$row['delivery_address']=printAddress($row['refUserId'],$row['address_id'],'text','p');
+		
+		$row['view_option']='<a href="'.site_url('delivery-notes?delivery_note_id='.$row['id']).'" target="_blank">'.__("View").'</a>'.' | <a href="'.site_url('invoice-download').'?delivery_note_id='.$row["id"].'" target="_blank">'.__("Download").'</a> <!--| <a href="'.site_url('invoice-download').'?delivery_note_id='.$row["id"].'" target="_blank" onClick="window.print();return false">'.__("print").'</a>-->';
+			
+		$entry = array( 'id'=>$row['id'], 'cell' => $row );
+		
+		$jsonData['rows'][] = $entry;
+	}
+	echo json_encode($jsonData);
+	exit;
+}
+function admin_order_history()
+{
+	global $wpdb;
+	
+	$user_id=0;
+			
+	$current_user = wp_get_current_user();
+		
+	$user_id=$current_user->ID;
+	
+	$page = isset($_POST['page']) ? $_POST['page'] : 1;
+	$rp = isset($_POST['rp']) ? $_POST['rp'] : 10;
+	$sortname = isset($_POST['sortname']) ? $_POST['sortname'] : ' 	trans_post_date';
+	$sortorder = isset($_POST['sortorder']) ? $_POST['sortorder'] : 'desc';
+	$query = isset($_POST['query']) ? $_POST['query'] : false;
+	$qtype = isset($_POST['qtype']) ? $_POST['qtype'] : false;
+	
+	$cart_headersql="SELECT * from ".$wpdb->prefix."cart_header WHERE status=1";
+	
+	$rows=$wpdb->get_results( $cart_headersql,ARRAY_A);
+	
+	//Make PHP handle the sorting
+	$sortArray = array();
+	foreach($rows AS $key => $row){
+		$sortArray[$key] = $row[$sortname];
+	}
+	
+	$sortMethod = SORT_ASC;
+	
+	if($sortorder == 'desc'){
+		$sortMethod = SORT_DESC;
+	}
+	
+	array_multisort($sortArray, $sortMethod, $rows);
+	$total = count($rows);
+	$rows = array_slice($rows,($page-1)*$rp,$rp);	
+	
+	header("Content-type: application/json");
+	$jsonData = array('page'=>$page,'total'=>$total,'rows'=>array());
+	
+	foreach($rows AS $row)
+	{
+		$row['refrence_id']="OOCO_".$row['id'];//$row['refrence_id'];
+		$row['trans_paid_date']=date('d/m/Y',strtotime($row['trans_paid_date']));
+		$row['total_price']=$row['total_price'];
+		if($row['paymentStatus'])
+			$row['paymentStatus']=__("Paid");	
+		else
+			$row['paymentStatus']=__("Not yet Paid");	
+		
+		$row['view_option']='<a href="'.site_url('invoice-summery').'?invoice_id='.$row["id"].'" target="_blank">'.__("View").'</a>'.' | <a href="'.site_url('invoice-download').'?invoice_id='.$row["id"].'" target="_blank">'.__("Download").'</a> | <a href="'.admin_url('admin.php').'?page=ooco_user_orders&invoice_id='.$row["id"].'">'.__("Delivery notes").'</a>';
+			
+		$entry = array( 'id'=>$row['id'], 'cell' => $row );
+		
+		$jsonData['rows'][] = $entry;
+	}
+	echo json_encode($jsonData);
+	exit;
+}
+function order_history()
+{
+	global $wpdb;
+	
+	$user_id=0;
+			
+	$current_user = wp_get_current_user();
+		
+	$user_id=$current_user->ID;
+	
+	$page = isset($_POST['page']) ? $_POST['page'] : 1;
+	$rp = isset($_POST['rp']) ? $_POST['rp'] : 10;
+	$sortname = isset($_POST['sortname']) ? $_POST['sortname'] : ' 	trans_post_date';
+	$sortorder = isset($_POST['sortorder']) ? $_POST['sortorder'] : 'desc';
+	$query = isset($_POST['query']) ? $_POST['query'] : false;
+	$qtype = isset($_POST['qtype']) ? $_POST['qtype'] : false;
+	
+	$cart_headersql="SELECT * from ".$wpdb->prefix."cart_header WHERE user_id = ".$user_id." AND status=1";
+	
+	$rows=$wpdb->get_results( $cart_headersql,ARRAY_A);
+	
+	//Make PHP handle the sorting
+	$sortArray = array();
+	foreach($rows AS $key => $row){
+		$sortArray[$key] = $row[$sortname];
+	}
+	
+	$sortMethod = SORT_ASC;
+	
+	if($sortorder == 'desc'){
+		$sortMethod = SORT_DESC;
+	}
+	
+	array_multisort($sortArray, $sortMethod, $rows);
+	$total = count($rows);
+	$rows = array_slice($rows,($page-1)*$rp,$rp);	
+	
+	header("Content-type: application/json");
+	$jsonData = array('page'=>$page,'total'=>$total,'rows'=>array());
+	
+	foreach($rows AS $row)
+	{
+		$row['refrence_id']="OOCO_".$row['id'];//$row['refrence_id'];
+		$row['trans_paid_date']=date('d/m/Y',strtotime($row['trans_paid_date']));
+		$row['total_price']=$row['total_price'];
+		if($row['paymentStatus'])
+			$row['paymentStatus']=__("Paid");	
+		else
+			$row['paymentStatus']=__("Not yet Paid");	
+		
+		$row['view_option']='<a href="'.site_url('invoice-summery').'?invoice_id='.$row["id"].'" target="_blank">'.__("View").'</a>'.' | <a href="'.site_url('invoice-download').'?invoice_id='.$row["id"].'" target="_blank">'.__("Download").'</a>';
+			
+		$entry = array( 'id'=>$row['id'], 'cell' => $row );
+		
+		$jsonData['rows'][] = $entry;
+	}
+	echo json_encode($jsonData);
+	exit;
+	
+}
 function updateData($tableName,$updateData,$where)
 {
 	global $wpdb;

@@ -48,7 +48,7 @@ $wp_useraddress=$wpdb->get_results( $useraddresssql );
 	font-weight:bold;
 }
 #editMyAccountPage .userForms {
-	height:200px;
+	height:300px;
 }
 .addressOptions {
 	position:absolute;
@@ -70,9 +70,9 @@ $wp_useraddress=$wpdb->get_results( $useraddresssql );
 </style>
 <div id="editMyAccountPage">
   <div class="errorCon" id="messageBox"> </div>
-  <div class="userForms" style="margin:15px 0 0 0">
-    <div class="myAccountDetails"> 
-    <div class="clsProductTle"><?php echo __("Edit you details")?> </div>  
+  <div class="clsProductTle"><?php echo __("Edit your details")?> </div>  
+  <div class="userForms" style="margin:15px 0 0 0; height:600px;">
+    <div class="myAccountDetails">     
     <form action="#" method="post" id="changeUserDetailFrm" name="changeUserDetailFrm">	        
       <div class="formField">
         <div class="columns four left label"><?php echo __("Name")?> </div>

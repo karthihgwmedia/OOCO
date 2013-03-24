@@ -60,6 +60,8 @@ function ooco_product_details_input(){
 	
 	$ooco_product_detail_qty = get_post_meta( $post->ID, 'ooco_product_detail_qty', true );	
 	
+	$ooco_product_delivery_limit = get_post_meta( $post->ID, 'ooco_product_delivery_limit', true );
+	
 	$ooco_product_detail_no_bottles = get_post_meta( $post->ID, 'ooco_product_detail_no_bottles', true );
 	
 	echo '<div class="frmFields">
@@ -69,7 +71,13 @@ function ooco_product_details_input(){
 			</div>
 			<div class="clear"></div>
 		  </div>';
-		  
+	
+	echo '<div class="frmFields">
+		  	<div class="clsFloatLeft label"><strong>Delivery limit  : </strong> </div>
+		  	<div class="clsFloatLeft clsFrmInput"><input type="text" name="ooco_product_delivery_limit" id="ooco_product_delivery_limit" value="'.$ooco_product_delivery_limit.'" /></div>
+			<div class="clear"></div>
+		  </div>';
+		  	  
 	echo '<div class="frmFields">
 		  	<div class="clsFloatLeft label"><strong>Price of the product : </strong> </div>
 		  	<div class="clsFloatLeft clsFrmInput"><input type="text" name="ooco_product_detail_price" id="ooco_product_detail_price" value="'.$ooco_product_detail_price.'" /></div>
@@ -133,6 +141,11 @@ function ooco_product_save_meta( $post_id ){
   $ooco_product_detail_qty = $_POST['ooco_product_detail_qty'];
   
   update_post_meta( $post_id, 'ooco_product_detail_qty', $ooco_product_detail_qty );
+  
+  $ooco_product_delivery_limit = $_POST['ooco_product_delivery_limit'];
+  
+  update_post_meta( $post_id, 'ooco_product_delivery_limit', $ooco_product_delivery_limit );
+  
   
   $ooco_product_detail_price = $_POST['ooco_product_detail_price'];
   

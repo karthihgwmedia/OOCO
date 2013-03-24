@@ -2,10 +2,6 @@
 /*
 	Template Name: OOCO payment sent page
 */
-get_header();
-
-$wp_temp_cart_id=$_SESSION["wp_temp_cart_id"];
-
 global $wpdb;
 
 $user_id=0;
@@ -16,10 +12,99 @@ $user_id=$current_user->ID;
 
 if ( $user_id == 0) {
 	$returnArray['errors']['container']='AddCardMessage'.$addCartProductId;
-	
 	echo "Your session has been expired. Please login <a href='".site_url('shop-login')."' class='shopForms'>here</a>";
 	exit;
 }
+
+get_header();
+
+$wp_temp_cart_id=$_SESSION["wp_temp_cart_id"];
+
+//$reference_number=$wp_temp_cart_id;
+
+$productPrice=getTotalPrice($user_id,$wp_temp_cart_id);
+
+$DeliveryCharge=getDeliveryCharge($user_id,$wp_temp_cart_id);
+
+$totalAmount=$productPrice+$DeliveryCharge;
+
+/*var_dump($productPrice);
+
+var_dump($DeliveryCharge);
+
+exit;*/
+
+$currency_code="AED";
+
+foreach($_REQUEST as $name => $value) {
+	if($name=='amount')
+		$params['amount']=$totalAmount;
+	else
+		$params[$name] = $value;
+}
+
+$temp_cart_headerData=array(
+							"products_price"=>$productPrice,
+							"total_price"=>$totalAmount,
+							"delivery_charge"=>$DeliveryCharge,
+							"trans_post_detail"=>serialize($params),
+							"trans_post_date"=>current_time('mysql'),
+							"refrence_id"=>$params['transaction_uuid']
+							);
+							
+$cart_header_where=array('id'=>$wp_temp_cart_id,"user_id"=>$user_id);
+
+$wpdb->update( $wpdb->prefix.'temp_cart_header', $temp_cart_headerData, $cart_header_where);	
+
+$ooco_ni_setting_mode=get_option('ooco_ni_setting_mode');
+
+$cybersource_url='https://testsecureacceptance.cybersource.com/pay';
+
+if($ooco_ni_setting_mode==0)
+	$cybersource_url='https://secureacceptance.cybersource.com/pay';
+else
+	$cybersource_url='https://testsecureacceptance.cybersource.com/pay';
+?>
+
+<div class="columns twelve" style="text-align:center"> 
+	<a href="#"><img src="<?php echo get_template_directory_uri(); ?>/images/main_logo.png" class="main_logo" /></a>
+    <h1><?php echo __("Please wait")?></h1>
+</div>
+<div class="clear"></div>
+<div class="columns twelve" id="threeCols">
+  <div class="row">
+    <div class="columns twelve">      
+      <form action="<?php echo $cybersource_url?>" method="post"/>
+      <?php
+        foreach($params as $name => $value) {
+            echo "<input type=\"hidden\" id=\"" . $name . "\" name=\"" . $name . "\" value=\"" . $value . "\"/>\n";
+        }
+
+        echo "<input type=\"hidden\" id=\"signature\" name=\"signature\" value=\"" . sign($params) . "\"/>\n";
+    ?>
+      <input type="submit" id="submit" value="Confirm" style="display:none" />
+      </form>
+      <script type="text/javascript">
+		jQuery(document).ready(function(){
+			jQuery("#submit").trigger('click');
+		})
+		</script>
+      <div class="clear"></div>
+    </div>
+  </div>
+  <?php
+	wp_footer();
+?>
+  <div id="loading"></div>
+  <div id="ajax"></div>
+  </body>
+  </html>
+  <?php
+/*get_header();
+
+$wp_temp_cart_id=$_SESSION["wp_temp_cart_id"];
+
+
 $productDetails = array();
 
 $deliverCharge=35;
@@ -51,13 +136,13 @@ $sql="SELECT * from ".$wpdb->prefix."temp_cart WHERE refUserId = ".$user_id." AN
 $wp_temp_cartsAdds=$wpdb->get_results( $sql );
 
 ?>
-<div class="columns twelve"> <a href="#"><img src="<?php echo get_template_directory_uri(); ?>/images/main_logo.png" class="main_logo" /></a></div>
+  <div class="columns twelve"> <a href="#"><img src="<?php echo get_template_directory_uri(); ?>/images/main_logo.png" class="main_logo" /></a></div>
   <div class="clear"></div>
   <div class="columns twelve" id="threeCols">
-<div class="row">
-  <div class="columns twelve">
-    <h1><?php echo __("Please wait")?></h1>
-    <?php
+    <div class="row">
+      <div class="columns twelve">
+        <h1><?php echo __("Please wait")?></h1>
+        <?php
 		if(!empty($wp_temp_cartsAdds))
 		{			
 			foreach($wp_temp_cartsAdds as $wp_temp_cartsAdd)
@@ -125,7 +210,7 @@ $wp_temp_cartsAdds=$wpdb->get_results( $sql );
 		
 		$params["profile_id"]=$ooco_ni_profile_id;
 		
-		$params["transaction_uuid"]=$user_id;
+		$params["transaction_uid"]=uniqid();
 		
 		$params["signed_field_names"]="access_key,profile_id,transaction_uuid,signed_field_names,unsigned_field_names,signed_date_time,locale,transaction_type,reference_number,amount,currency";
 		
@@ -135,30 +220,44 @@ $wp_temp_cartsAdds=$wpdb->get_results( $sql );
 		
 		$params["locale"]='en';
 		
-		$params["transaction_type"]='authorization';
+		$params["transaction_type"]='sale';
 		
-		$params["reference_number"]=$reference_number;
+		$params["reference_number"]=uniqid().$reference_number;
 		
-		$params["amount"]=$amout."0.0";
+		$params["amount"]=$amout;
 		
 		$params["currency"]=$currency_code;
 		
+		if($ooco_ni_setting_mode==0)
+			$cybersource_url='https://secureacceptance.cybersource.com/pay';
+		else
+			$cybersource_url='https://testsecureacceptance.cybersource.com/pay';
 	?>
-    
-    <form method="post" name="paymentform" id="paymentform" action="https://testsecureacceptance.cybersource.com/pay">
-      <?php
+        <form method="post" action="<?php echo $cybersource_url?>">
+          <?php
 	  	foreach($params as $name => $value) {
             echo "<input type=\"hidden\" id=\"" . $name . "\" name=\"" . $name . "\" value=\"" . $value . "\"/>\n";
         }
         echo "<input type=\"hidden\" id=\"signature\" name=\"signature\" value=\"" . sign($params) . "\"/>\n";
 	  ?>
-      <input type="submit" id="submit" value="Confirm"/>
-    </form>
-  </div>
-</div>
-<script type="text/javascript">
+          <input type="hidden" id="submit" name="submit" value="Submit"/>
+          <input type="submit" id="submit" value="Confirm"/>
+        </form>
+      </div>
+    </div>
+    <script type="text/javascript">
 	jQuery(document).ready(function(){
 		//jQuery("#paymentform").submit();
 	})
 </script>
-<?php get_footer(); ?>
+    <div class="clear"></div>
+  </div>
+</div>
+<?php
+	wp_footer();
+?>
+<div id="loading"></div>
+<div id="ajax"></div>
+</body>
+</html>
+*/ 

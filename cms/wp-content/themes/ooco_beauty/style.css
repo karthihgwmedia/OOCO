@@ -635,13 +635,14 @@ aside .slimContentContainer {
 #shopOrder {
 	background: none repeat scroll 0 0 #E3E8E8;
 	left: 30%;
-	padding: 20px 20px 10px;
+	padding: 10px 20px 10px;
 	position: absolute;
 	text-align: left;
 	width: 40%;
 	z-index: 1;
 	top:100%;
-	z-index:2000;	
+	z-index:2000;
+	height:92%;
 }
 
 #shopOrder .clsProductTle {
@@ -651,6 +652,9 @@ aside .slimContentContainer {
 #shopOrder .productCon {
 	margin: 10px 0;
 	padding:0;
+	border-bottom: 1px solid;
+    margin: 10px 0;
+    padding: 0 0 10px;
 }
 #shopOrder .clsBenefitsDesc {
 	border-bottom: 1px solid #7D7D7D;
@@ -661,14 +665,28 @@ aside .slimContentContainer {
 }
 #shopOrder .productCon .product .productTte {
 	font-family: 'johnston_itcbold';
-	font-weight:bold;
+	/*font-weight:bold;*/
 	text-transform:uppercase;
 	margin:10px 0;
+	color:#C41200;
 }
 #shopOrder .productCon .product .productDesc {
 	color:#999999;
 }
-#shopOrder .productCon  .productQtyLbl {
+#shopOrder .productPrice
+{
+	text-align:center;
+	padding:0;
+}
+#shopOrder .productPrice .productPriceTxt
+{
+	margin:22px 0 0 0;
+}
+#shopOrder .productCon .productQty
+{
+	padding: 0 10px;
+}
+#shopOrder .productCon .productQtyLbl {
 	color:#999999;
 	font-family: 'johnston_itcbold';
 	text-transform:uppercase;
@@ -687,7 +705,11 @@ aside .slimContentContainer {
 	text-align:center;
 }
 #shopOrder .addToCart {
-	text-align:right;
+	text-align:left;
+	padding:0 5px !important; 
+}
+#shopOrder .addToCart .calcLbl {
+	 margin-top: 35px;
 }
 .AddCardMessage
 {
@@ -711,7 +733,7 @@ aside .slimContentContainer {
 	left: 7px;
     opacity: 1;
     position: absolute;
-    top: 9px;
+    top: 28px;
 }
 #shopOrder .addToCart a {
 	display:inline-block;
@@ -756,15 +778,15 @@ aside .slimContentContainer {
 	font-size:18px;
 	display:block;
 	text-transform:uppercase;
-	color:#cccccc;
-	font-family: 'johnston_itcbold';
+	color:#000000;
+	font-family: 'johnston_itcbold';	
 }
 #shopOrder .clsCloseCon {
-	margin:10px 0 0 0;
+	margin:5px 0 0 0;
 	text-align:center;
 }
 #shopOrder .clsCloseCon .closeShop {
-	background:url(images/closeBtn.png) no-repeat 0 0px;
+	background:url(images/closeBtn.png) no-repeat 0 -72px;
 	height:73px;
 	width:74px;
 	display:inline-block;
@@ -774,7 +796,7 @@ aside .slimContentContainer {
 	color:#FFFFFF;
 }
 #shopOrder .clsCloseCon .closeShop:hover {
-	background-position:0 -72px;
+	background-position:0 0px;
 	color:#FFFFFF;
 	text-decoration:none;
 }
@@ -782,7 +804,7 @@ aside .slimContentContainer {
 	margin:35px 0 0;
 	height:300px;
 	overflow:hidden;
-	min-height:460px;
+	/*min-height:460px;*/
 }
 .userForms .FrmDesc {
 	margin:20px 0;
@@ -825,7 +847,7 @@ aside .slimContentContainer {
 }
 .frmSubmit {
 	text-align:center;
-	margin: 20px 0;
+	margin: 10px 0;
 }
 .boxShadow {
 	-webkit-box-shadow: 0px 0px 10px rgba(50, 50, 50, 0.75);
@@ -841,6 +863,12 @@ aside .slimContentContainer {
 	border:1px solid #999999;
 	font-family: 'johnston_itcbold';
 }
+.frmSubmit input[type="submit"]:hover,input[type="button"]:hover
+{
+	background:#C6C8C8;
+	color:#000000;
+}
+
 .clsFrmDesc a {
 	color:#cc3333;
 }
@@ -1266,6 +1294,7 @@ aside .slimContentContainer {
 	min-height: 450px;*/
     margin: 10px;
 	top:20px;
+	height:100%;
 }
 .errorCon
 {
@@ -1304,14 +1333,23 @@ aside .slimContentContainer {
 }
 .removeCartLink
 {
-	height: 34px;
-    width: 35px;
+	background: url("images/del_close.png") no-repeat scroll right -1px transparent;
+    display: inline-block;
+    font-size: 11px;
+    height: 17px;
+    padding: 3px 19px 0 0;
+    text-transform: uppercase;
+}
+.removeCartLink
+{
+	/*height: 17px;
+    width: 17px;
 	display:block;
-	background:url(images/close.png) no-repeat 0 0;
+	background:url(images/close.png) no-repeat 0 0;*/
 }
 .removeCartLink:hover
 {
-	background-position:-34px 0;
+	background: url("images/del_close_hover.png") no-repeat scroll right -1px transparent;
 }
 .SummeryAddressHeader,.SummeryAddressProduct,.SummeryAddressQty
 {
@@ -1321,7 +1359,10 @@ aside .slimContentContainer {
 }
 .OrderSummeryHeader
 {
-	padding:0 0;
+	border-bottom: 1px solid;
+    border-top: 1px solid;
+    margin: 0 0 5px;
+    padding: 5px 0;
 }
 .OrderSummeryCon .columns,.OrderSummeryHeader .columns 
 {
@@ -1393,23 +1434,32 @@ aside .slimContentContainer {
 {
 	width:80%;
 	padding:6px;
-	float:left;
+	/*float:left;*/
 }
 .addAddress
 {
 	display: inline-block;
-    float: left;
+   /* float: left;*/
     margin-left: 5px;
     position: relative;
 }
 .addAddress a
 {
-	background:url(images/add.png) no-repeat;
-	height:35px;
-	width:35px;
-	display:block;
+	background: url("images/add_icon.png") no-repeat scroll right 4px transparent;
+    display: inline-block;
+    font-size: 11px;
+    height: 17px;
+    padding: 3px 19px 20px 0;
+	text-transform:uppercase;
 }
 .addAddress a:hover
 {
-	background-position:-34px 0;
+	background:url(images/add_icon_hover.png) no-repeat scroll right 4px transparent;
+}
+.atBottom
+{
+	position:absolute;
+	width:100%;
+	bottom:5px;
+	left:0;
 }

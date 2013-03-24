@@ -34,7 +34,24 @@ $deliveryChargeText='';
 $finalTotal=array();
 	
 ?>
-
+<style type="text/css">
+	.orderDeliveryCharge
+	{
+		margin-top: 20px;
+	}	
+	.clsSubTotal
+	{
+		margin-top: 10px;
+	}
+	.orderFinalTotal
+	{
+		border-bottom: 1px solid;
+		border-top: 1px solid;
+		font-size: 18px;
+		padding: 10px 0;
+		text-align: right;
+	}
+</style>
 <div id="OrderSummery">
   <div class="AddCardMessage" id="messageBox"> </div>
   <div class="columns twelve OrderSummeryHeader">
@@ -44,7 +61,7 @@ $finalTotal=array();
     <div class="clear"></div>
   </div>
   <div class="clear"></div>
-  <div class="userForms">
+  <div class="userForms" style="height:400px;">
     <?php
 	if(!empty($wp_temp_cartsAdds))
 	{
@@ -73,7 +90,7 @@ $finalTotal=array();
 							$recipientNames[] = ucwords($wp_temp_cart->receiverName);
                          }
                      }
-					 
+					$recipientNames = array_unique($recipientNames);
 					 
 					 if(!empty($recipientNames))
 					 {
@@ -115,6 +132,8 @@ $finalTotal=array();
 						{ 
 							$deliverCharge=35;
 							
+							$globalDeliveryCharge=35;
+							
 							$orderSubTotal =0;
 							
 							$orderSummerySubTotal=array();
@@ -136,11 +155,20 @@ $finalTotal=array();
 										
 										$ooco_product_detail_no_bottles=getPrductMetaData($wp_temp_cart->product_id,'ooco_product_detail_no_bottles');
 										
+										$ooco_product_delivery_limit=getPrductMetaData($wp_temp_cart->product_id,'ooco_product_delivery_limit');
+										
 										$orderSubTotal = ($wp_temp_quantity->quantity) * $ooco_product_detail_price;
 										
-										if($ooco_product_detail_no_bottles==30)
+										if($ooco_product_delivery_limit==0)
 											$deliverCharge=0;
-										
+										else
+										{
+											if($wp_temp_quantity->quantity > $ooco_product_delivery_limit)
+												$deliverCharge=ceil($wp_temp_quantity->quantity/$ooco_product_delivery_limit)*$globalDeliveryCharge;
+											else
+												$deliverCharge=$globalDeliveryCharge;
+											
+										}
 										//$productDetails	
 										
 										echo '<div class="OrderQuantity"><span>'.ucwords($wp_temp_quantity->quantity).'</span>
@@ -154,8 +182,10 @@ $finalTotal=array();
 								//$orderSummerySubTotal[$wp_temp_cartsAdd->address_id] = $orderSubTotal;
 							}
 						}
-						if($deliverCharge)	 
+						if($deliverCharge)	
+						{ 
 							$deliveryChargeText=$deliverCharge;
+						}
 						else
 							$deliveryChargeText=$deliverCharge.' * free shipping';
                     
@@ -168,7 +198,7 @@ $finalTotal=array();
 						
 						echo '<div class="orderDeliveryCharge"> 
 								<p><strong>DeliverCharge </strong> : '. $deliveryChargeText.'</p>	
-								<p> <strong>SUB Total</strong> : '.$subTotal.'</p>							
+								<p class="clsSubTotal"> <strong>SUB Total  : '.$subTotal.' ( AED ) </strong></p>							
 							 </div>';
 						//$deliveryChargeText;
 					?>                  	
@@ -181,10 +211,33 @@ $finalTotal=array();
 	  ?>
     </div>
     <div class="orderFinalTotal">
-    	<strong>Total : </strong> <?php echo array_sum($finalTotal)?>
+    	<strong>Total ( AED ) : </strong> <?php echo array_sum($finalTotal)?>
     </div>
     <div class="proceedToCheckOut frmSubmit">
-      <input type="submit" name="proceedToPayment" id="proceedToPayment" value="<?php echo __("Proceed To Payment")?>" class="boxShadow"/>
+      <?php
+	  	$ooco_ni_secret_key=get_option('ooco_ni_secret_key');
+
+		$ooco_ni_access_key=get_option('ooco_ni_access_key');
+
+		$ooco_ni_profile_id=get_option('ooco_ni_profile_id');
+
+		
+	  ?>
+      <form action="<?php echo site_url('payment-sent-page')?>" method="post">
+      	   <input type="hidden" name="access_key" value="<?php echo $ooco_ni_access_key?>">
+            <input type="hidden" name="profile_id" value="<?php echo $ooco_ni_profile_id?>">
+            <input type="hidden" name="transaction_uuid" value="<?php echo uniqid() ?>">
+            <input type="hidden" name="signed_field_names"
+                   value="access_key,profile_id,transaction_uuid,signed_field_names,unsigned_field_names,signed_date_time,locale,transaction_type,reference_number,amount,currency">
+            <input type="hidden" name="unsigned_field_names">
+            <input type="hidden" name="signed_date_time" value="<?php echo gmdate("Y-m-d\TH:i:s\Z"); ?>">
+            <input type="hidden" name="locale" value="en">
+            <input type="hidden" name="transaction_type" size="25" value="authorization">
+            <input type="hidden" name="reference_number" size="25" value="<?php echo $wp_temp_cart_id?>">            
+            <input type="hidden" name="amount" size="25" value="<?php echo array_sum($finalTotal);?>">
+            <input type="hidden" name="currency" size="25" value="AED">
+	      <input type="submit" name="proceedToPayment" id="proceedToPayment" value="<?php echo __("Proceed To Payment")?>" class="boxShadow"/>
+      </form>
       <input type="submit" name="EditCartSummery" id="EditCartSummery" value="<?php echo __("Edit Cart")?>" class="boxShadow"/>
     </div>
     <?php

@@ -21,12 +21,16 @@ global $wpdb;
 	
 	$wp_useraddress=$wpdb->get_results( $useraddresssql );
 	
+	if(isset($_GET["product_id"]))
+		$_SESSION["session_product_id"]=$_GET["product_id"];
+	else
+		$_SESSION["session_product_id"]=0;
 	//var_dump($current_user->user_nicename);
 ?>
 <style type="text/css">
 #myAccountPage .userForms
 {
-	margin:10px 0 0;		
+	margin:0px 0 0;		
 }
 #myAccountPage .userForms .dispVal
 {
@@ -56,7 +60,7 @@ global $wpdb;
 }
 #myAccountPage .userForms
 {
-	height:200px;	
+	height:460px;	
 }
 .addressOptions
 {
@@ -201,7 +205,8 @@ global $wpdb;
      <input type="submit" name="editMyAccountDetail" id="editMyAccountDetail" value="<?php echo __("Edit Myaccount")?>" class="boxShadow"/>     
   </div>
    <div class="MyaccountOptions frmSubmit">
-   	<input type="submit" name="countinueShopping" id="countinueShopping" value="<?php echo __("Continue shopping")?>" class="boxShadow"/>     
+    <input type="submit" name="countinueOneToOne" id="countinueOneToOne" value="<?php echo __("One to one")?>" class="boxShadow"/>&nbsp;&nbsp;&nbsp;      
+   	<input type="submit" name="countinueOneToMany" id="countinueOneToMany" value="<?php echo __("One to many")?>" class="boxShadow"/>     
    </div>
 </div>
 <script type="text/javascript">
@@ -210,7 +215,10 @@ jQuery(document).ready(function($){
 		e.preventDefault();
 		$("#editmyaccountLink").trigger("click");
 	})
-
+	$("#OrderHistory").click(function(e){
+		 e.preventDefault();
+		jQuery("#orderHistoryLink").trigger("click");
+	})
 	jQuery(".addressOptions .delAdd").click(function(e){
 		e.preventDefault();
 		var delAddConId=jQuery(this).attr("id");
