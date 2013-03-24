@@ -63,7 +63,7 @@
       <?php
 	  	$ooco_product_args = array(
 				'orderby'         => 'ooco_product_detail_qty',
-				'order'           => 'ASC',
+				'order'           => 'DESC',
 				'post_type'       => 'ooco_product',
 				'post_status'     => 'publish',
 				'numberposts'    => -1, 

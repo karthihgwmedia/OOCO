@@ -1043,7 +1043,7 @@ body {
       <?php
 	 	// var_dump();
 	  
-	  	$invoice_detailsql="SELECT *,count(product_id) as product_qty from ".$wpdb->prefix."confirm_cart WHERE ( refUserId = ".$user_id." AND refBookingId =".$rows[0]->id.")";
+	  	$invoice_detailsql="SELECT *,count(product_id) as product_qty from ".$wpdb->prefix."confirm_cart WHERE ( refUserId = ".$user_id." AND refBookingId =".$rows[0]->id.") GROUP BY product_id";
 	
 		//echo $invoice_detailsql;	
 		
@@ -1053,6 +1053,8 @@ body {
 		
 		if(!empty($invoice_details))
 		{
+			$i=1;
+			
 			foreach($invoice_details as $invoice_detail)
 			{
 				$productDetails = getProductById($invoice_detail->product_id);
@@ -1060,7 +1062,7 @@ body {
 				$ooco_product_detail_price=getPrductMetaData($invoice_detail->product_id,'ooco_product_detail_price');
 	  ?>
               <TR>
-                <TD class="tr6 td36"><P class="p11 ft12">1</P></TD>
+                <TD class="tr6 td36"><P class="p11 ft12"><?php echo $i?></P></TD>
                 <TD colspan=2 class="tr6 td43"><P class="p5 ft3">OCOOBeautyDrink</P></TD>
                 <TD class="tr6 td2"><P class="p12 ft3"><?php echo $productDetails['post_title']." pack"?> </P></TD>
                 <TD class="tr6 td3"><P class="p0 ft3"></P></TD>
@@ -1071,6 +1073,7 @@ body {
                 <TD class="tr6 td45"><P class="p0 ft1">&nbsp;</P></TD>
               </TR>
       <?php
+	  		$i++;
 	  		}
 	  	}
 	  ?>
